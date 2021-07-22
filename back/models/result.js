@@ -1,23 +1,23 @@
 const mongoose = require("mongoose")
 
-const entrySchema = new mongoose.Schema({
-    title: {
+const resultSchema = new mongoose.Schema({
+    nickname: {
         type: String,
         required: true,
     },
-    tags: {
+    questions: {
         type: Array,
         required: true,
     },
-    data: {
+    points: {
         type: String,
         required: true,
     },
     date: {
-        type: String,
+        type: Date,
         required: true,
-    },
+    }
 
-}, { collection: 'entries' })
+}, { collection: 'results' })
 
-module.exports = mongoose.model("entry", entrySchema);
+module.exports = mongoose.model("result", resultSchema);
