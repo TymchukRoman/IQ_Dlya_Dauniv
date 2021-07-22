@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require("mongoose");
-// const Entry = require('./models/entry');
-// const Category = require('./models/category');
+const Admin = require('./models/admin');
+const Question = require('./models/question');
+const Result = require('./models/result');
 const bodyParser = require('body-parser');
 const app = express();
 
@@ -18,6 +19,55 @@ mongoose.connection.on("connected", (err, res) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.get('/getQuestions', (req, res) => {
+    Question.find({}, (err, found) => {
+        if (!found) {
+            res.status(404).json({ err });
+            return;
+        } else {
+            res.send({ data: found });
+        }
+    })
+})
+
+app.get('/getResults', (req, res) => {
+    Result.find({}, (err, found) => {
+        if (!found) {
+            res.status(404).json({ err });
+            return;
+        } else {
+            res.send({ data: found });
+        }
+    })
+})
+
+app.post('/addQuestion', (req, res) => {
+    verifyAdmin(req.body.login, req.body.password)
+})
+
+app.post('/addAdmin', (req, res) => {
+    verifyAdmin(req.body.login, req.body.password)
+})
+
+const addResult = async (req, res) => {
+    const result = new Result({
+        nickname: req.body.nickname,
+        questions: [...req.body.questions],
+        points: req.body.points,
+        date: new Date(Date.now()).toISOString()
+    });
+    const savedResult = await result.save();
+    res.send(savedResult)
+}
+
+app.post('/check', (req, res) => {
+
+})
+
+const verifyAdmin = (login, password) => {
+    return true
+}
 
 // app.get('/getEntries', (req, res) => {
 //     Entry.find({}, (err, found) => {
