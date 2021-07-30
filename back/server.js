@@ -20,16 +20,66 @@ mongoose.connection.on("connected", (err, res) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get('/getQuestions', (req, res) => {
-    Question.find({}, (err, found) => {
+/// Get question
+
+app.get('/getQuestions', async (req, res) => {
+    let idArray = [];
+    let qArray = [];
+    await Question.find({}, (err, found) => {
         if (!found) {
             res.status(404).json({ err });
             return;
         } else {
-            res.send({ data: found });
+            idArray = found.map((item) => {
+                return item._id
+            })
         }
     })
+    Promise.all(getArray(idArray.length-1).map(async (index) => {
+        let result
+        await Question.find({ _id: idArray[index] }, (err, found) => {
+            console.log(idArray[index], index)
+            if (!found) {
+                result = null;
+            } else {
+                result = found[0];
+            }
+        })
+        qArray.push(result)
+    })).then(() => {
+        res.send({ data: [...qArray] })
+    })
 })
+
+const getArray = (max) => {
+    let arr = []
+    for (let i = 0; i < 10; i++) {
+        let random = Math.round(Math.random() * max);
+        if (arr.includes(random)) {
+            i--;
+            continue;
+        }
+        arr[i] = random;
+    }
+    return arr;
+}
+
+/// Get Question end
+/// Add question
+
+app.post('/addQuestion', async (req, res) => {
+    const question = new Question({
+        qText: req.body.qText,
+        rigthAnswer: req.body.rigthAnswer,
+        answerList: [...req.body.answerList],
+        author: req.body.author,
+        date: new Date(Date.now()).toISOString()
+    });
+    const savedQ = await question.save();
+    res.send(savedQ)
+})
+
+///Add question end
 
 app.get('/getResults', (req, res) => {
     Result.find({}, (err, found) => {
@@ -40,10 +90,6 @@ app.get('/getResults', (req, res) => {
             res.send({ data: found });
         }
     })
-})
-
-app.post('/addQuestion', (req, res) => {
-    verifyAdmin(req.body.login, req.body.password)
 })
 
 app.post('/addAdmin', (req, res) => {

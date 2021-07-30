@@ -17,6 +17,10 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    date: {
+        type: String,
+        required: true,
+    }
 }, { collection: 'questions' })
 
 module.exports = mongoose.model("question", questionSchema);
