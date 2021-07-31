@@ -1,5 +1,5 @@
 import "./App.css";
-import RootRouter from "./Pages/Layauts.jsx/Routers/Router.jsx";
+import RootRouter from "./Pages/Layouts/Routers/Router.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {

@@ -38,7 +38,9 @@ const RootRouter = (props) =>{
   <Switch>
     <Layout >
       {Routers.map(({ path, Component, exact }) => (
-        <Route exact={exact} path={path}></Route>
+        <Route exact={exact} path={path}>
+        <Component exact={exact} path={path} />
+        </Route>
       ))}
       <Redirect to={paths.home} />
     </Layout>
