@@ -35,10 +35,9 @@ app.get('/getQuestions', async (req, res) => {
             })
         }
     })
-    Promise.all(getArray(idArray.length-1).map(async (index) => {
-        let result
+    Promise.all(getArray(idArray.length - 1).map(async (index) => {
+        let result;
         await Question.find({ _id: idArray[index] }, (err, found) => {
-            console.log(idArray[index], index)
             if (!found) {
                 result = null;
             } else {
@@ -73,13 +72,43 @@ app.post('/addQuestion', async (req, res) => {
         rigthAnswer: req.body.rigthAnswer,
         answerList: [...req.body.answerList],
         author: req.body.author,
-        date: new Date(Date.now()).toISOString()
+        date: new Date(Date.now()).toISOString(),
     });
     const savedQ = await question.save();
-    res.send(savedQ)
+    res.send(savedQ);
 })
 
-///Add question end
+/// Add question end
+/// Check and add Result
+
+app.post('/checkResult', async (req, res) => {
+    let points = 0;
+    Promise.all(req.body.answers.map(async (answer) => {
+        await Question.findOne({ _id: answer.id }, (err, found) => {
+            if (!found) {
+                console.log({ err });
+            } else {
+                if (found.rigthAnswer === answer.answer) {
+                    points++;
+                    return 1;
+                }
+                return 1;
+            }
+        })
+    })).then(async () => {
+        const testResult = new Result({
+            nickname: req.body.nickname,
+            questions: [...req.body.answers],
+            points: points + "/" + req.body.answers.length,
+            date: new Date(Date.now()).toISOString(),
+        });
+        const savedR = await testResult.save();
+        res.send(savedR);
+    })
+
+})
+
+///Check and add Result end
 
 app.get('/getResults', (req, res) => {
     Result.find({}, (err, found) => {
