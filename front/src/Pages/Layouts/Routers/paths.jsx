@@ -1,6 +1,5 @@
 const paths = {
-    navbar: '/ ',
-    main: '/ ',
+    main: '/main',
     test: '/test',
     add: '/add',
     results: '/results',
