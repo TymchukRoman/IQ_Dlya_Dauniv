@@ -67,16 +67,40 @@ const getArray = (max) => {
 /// Add question
 
 app.post('/addQuestion', async (req, res) => {
-    const question = new Question({
-        qText: req.body.qText,
-        rigthAnswer: req.body.rigthAnswer,
-        answerList: [...req.body.answerList],
-        author: req.body.author,
-        date: new Date(Date.now()).toISOString(),
-    });
-    const savedQ = await question.save();
-    res.send(savedQ);
+    if(isAdmin(req.body.login, req.body.password)){
+        const question = new Question({
+            qText: req.body.qText,
+            rigthAnswer: req.body.rigthAnswer,
+            answerList: [...req.body.answerList],
+            author: req.body.login,
+            date: new Date(Date.now()).toISOString(),
+        });
+        const savedQ = await question.save();
+        res.send(savedQ);
+    }
+    res.send("Wrong login or password")
 })
+
+const isAdmin = (login, password) => {
+    admins = [
+        {
+            login: "RomanT",
+            password: "admin"
+        },
+        {
+            login: "RomanI",
+            password: "admin"
+        },
+    ]
+    const founded = admins.filter(user => user.login == login)
+    if(!founded[0]){
+        return false
+    }
+    if(founded[0].password == password) {
+        return true
+    }
+    return false
+}
 
 /// Add question end
 /// Check and add Result
