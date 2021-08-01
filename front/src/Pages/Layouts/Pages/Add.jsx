@@ -7,13 +7,13 @@ const AddTest = (props) => {
   const formik = useFormik({
     initialValues: {
       question: "",
-      right_answer: "",
+      rightAnswer: "",
       answersList0: "",
       answersList1: "",
       answersList2: "",
       answersList3: "",
       password: "",
-      email: "",
+      login: "",
     },
     onSubmit: (values) => {
       postData(values);
@@ -85,14 +85,14 @@ const AddTest = (props) => {
       </FormGroup>
 
       <div className="form-group">
-        <label>Email</label>
+        <label>login</label>
         <input
-          name="email"
+          name="login"
           onChange={formik.handleChange}
-          value={formik.values.email}
-          type="email"
+          value={formik.values.login}
+          type="login"
           className="form-control"
-          placeholder="Enter email"
+          placeholder="Enter login"
         />
       </div>
 
