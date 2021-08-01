@@ -9,7 +9,7 @@ import Layout from "./Layouts";
 
 const Routers = [
   {
-    path: paths.home,
+    path: paths.main,
     Component: Home,
     exact: true,
   },
@@ -19,7 +19,7 @@ const Routers = [
     exact: true,
   },
   {
-    path: paths.result,
+    path: paths.results,
     Component: Results,
     exact: true,
   },
@@ -30,24 +30,21 @@ const Routers = [
   },
 ];
 
-const RootRouter = (props) =>{
-  return(
-
-
-<Router>
-  <Switch>
-    <Layout >
-      {Routers.map(({ path, Component, exact }) => (
-        <Route exact={exact} path={path}>
-        <Component exact={exact} path={path} />
-        </Route>
-      ))}
-      <Redirect to={paths.home} />
-    </Layout>
-  </Switch>
-</Router>
-  )
-}
-
+const RootRouter = (props) => {
+  return (
+    <Router>
+      <Switch>
+        <Layout>
+          {Routers.map(({ path, Component, exact }) => (
+            <Route exact={exact} path={path}>
+              <Component />
+            </Route>
+          ))}
+          <Redirect to={paths.home} />
+        </Layout>
+      </Switch>
+    </Router>
+  );
+};
 
 export default RootRouter;
