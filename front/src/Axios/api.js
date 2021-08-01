@@ -10,6 +10,7 @@ const client = axios.create({
 
 export const postData = (data) => {
     let array = [data.answersList0, data.answersList1, data.answersList2, data.answersList3]
+    console.log(data)
     return client.post("addQuestion", {
       qText: data.qText,
       rigthAnswer: data.rigthAnswer,

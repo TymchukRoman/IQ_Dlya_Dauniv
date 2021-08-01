@@ -6,8 +6,8 @@ import { postData } from "../../../Axios/api";
 const AddTest = (props) => {
   const formik = useFormik({
     initialValues: {
-      question: "",
-      rightAnswer: "",
+      qText: "",
+      rigthAnswer: "",
       answersList0: "",
       answersList1: "",
       answersList2: "",
@@ -23,24 +23,24 @@ const AddTest = (props) => {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <FormGroup>
-        <Label for="name">Name of Question</Label>
+        <Label for="name">Name of qText</Label>
         <Input
-          name="question"
+          name="qText"
           onChange={formik.handleChange}
-          value={formik.values.question}
+          value={formik.values.qText}
           type="textarea"
-          question="question"
+          qText="qText"
           placeholder="Текст питання"
         />
       </FormGroup>
       <FormGroup>
         <Label for="name">right_answer</Label>
         <Input
-          name="rightAnswer"
+          name="rigthAnswer"
           onChange={formik.handleChange}
-          value={formik.values.rightAnswer}
+          value={formik.values.rigthAnswer}
           type="textarea"
-          rightAnswer="rightAnswer"
+          rigthAnswer="rigthAnswer"
           placeholder="Правильна відповідь"
         />
       </FormGroup>
