@@ -6,15 +6,18 @@ import { postData } from "../../../Axios/api";
 const AddTest = (props) => {
   const formik = useFormik({
     initialValues: {
-    question: "",
-    right_answer: "",
-    answers_list : "",
-    password: "",
-    email: "",
+      question: "",
+      right_answer: "",
+      answersList0: "",
+      answersList1: "",
+      answersList2: "",
+      answersList3: "",
+      password: "",
+      email: "",
     },
     onSubmit: (values) => {
-      postData (values);
-      console.log('hi')
+      postData(values);
+      console.log("hi");
     },
   });
   return (
@@ -22,6 +25,7 @@ const AddTest = (props) => {
       <FormGroup>
         <Label for="name">Name of Question</Label>
         <Input
+          name="question"
           onChange={formik.handleChange}
           value={formik.values.question}
           type="textarea"
@@ -30,77 +34,81 @@ const AddTest = (props) => {
         />
       </FormGroup>
       <FormGroup>
-      <Label for="name">right_answer</Label>
+        <Label for="name">right_answer</Label>
         <Input
+          name="rightAnswer"
           onChange={formik.handleChange}
-          value={formik.values.right_answer}
+          value={formik.values.rightAnswer}
           type="textarea"
-          right_answer="right_answer"
+          rightAnswer="rightAnswer"
           placeholder="Правильна відповідь"
         />
       </FormGroup>
       <FormGroup>
-      <Label for="name">answers_list</Label>
+        <Label for="name">answersList</Label>
         <Input
+          name="answersList0"
           onChange={formik.handleChange}
-          value={formik.values.answers_list}
+          value={formik.values.answersList0}
           type="textarea"
-          answers_list="answers_list"
+          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
-        <br/>
-         <Input
+        <br />
+        <Input
+          name="answersList1"
           onChange={formik.handleChange}
-          value={formik.values.answers_list}
+          value={formik.values.answersList1}
           type="textarea"
-          answers_list="answers_list"
+          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
-        <br/>
-         <Input
+        <br />
+        <Input
+          name="answersList2"
           onChange={formik.handleChange}
-          value={formik.values.answers_list}
+          value={formik.values.answersList2}
           type="textarea"
-          answers_list="answers_list"
+          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
-          <br/>
-         <Input
+        <br />
+        <Input
+          name="answersList3"
           onChange={formik.handleChange}
-          value={formik.values.answers_list}
+          value={formik.values.answersList3}
           type="textarea"
-          answers_list="answers_list"
+          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
+        <br />
       </FormGroup>
 
       <div className="form-group">
-              <label>Email</label>
-              <input
-                name="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                type="email"
-                className="form-control"
-                placeholder="Enter email"
-              />
-            </div>
+        <label>Email</label>
+        <input
+          name="email"
+          onChange={formik.handleChange}
+          value={formik.values.email}
+          type="email"
+          className="form-control"
+          placeholder="Enter email"
+        />
+      </div>
 
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                name="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                type="password"
-                className="form-control"
-                placeholder="Enter password"
-              />
-            </div>
+      <div className="form-group">
+        <label>Password</label>
+        <input
+          name="password"
+          onChange={formik.handleChange}
+          value={formik.values.password}
+          type="password"
+          className="form-control"
+          placeholder="Enter password"
+        />
+      </div>
       <Button>Submit</Button>
     </Form>
-
-    
   );
 };
 
