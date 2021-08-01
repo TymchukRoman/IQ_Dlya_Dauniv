@@ -4,7 +4,7 @@ const client = axios.create({
   baseURL: "http://localhost:3000/",
 });
 
-export const getQuestions = () => {
+export const getQuestions = async () => {
   return client.get("getQuestions");
 };
 
