@@ -77,8 +77,10 @@ app.post('/addQuestion', async (req, res) => {
         });
         const savedQ = await question.save();
         res.send(savedQ);
+        return;
     }
     res.send("Wrong login or password")
+    return;
 })
 
 const isAdmin = (login, password) => {
