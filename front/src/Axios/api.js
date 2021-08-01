@@ -6,9 +6,9 @@ export const getData = () => {
 
 export const postData = (data) => {
   return axios.post("http://localhost:4000/postData", {
-    question: data.question,
-    right_answer: data.right_answer,
-    answers_list : data.answers_list, 
+    question: data.qText,
+    right_answer: data.rigthAnswer,
+    answers_list : data.answerList, 
     postId: data.postId,
   });
 };
