@@ -44,7 +44,12 @@ app.get('/getQuestions', async (req, res) => {
                 result = found[0];
             }
         })
-        qArray.push(result)
+        qArray.push({
+            answerList: result.answerList,
+            _id: result._id,
+            qText: result.qText,
+            author: result.author,
+        })
     })).then(() => {
         res.send({ data: [...qArray] })
     })
@@ -67,7 +72,7 @@ const getArray = (max) => {
 /// Add question
 
 app.post('/addQuestion', async (req, res) => {
-    if(isAdmin(req.body.login, req.body.password)){
+    if (isAdmin(req.body.login, req.body.password)) {
         const question = new Question({
             qText: req.body.qText,
             rigthAnswer: req.body.rigthAnswer,
@@ -95,10 +100,10 @@ const isAdmin = (login, password) => {
         },
     ]
     const founded = admins.filter(user => user.login == login)
-    if(!founded[0]){
+    if (!founded[0]) {
         return false
     }
-    if(founded[0].password == password) {
+    if (founded[0].password == password) {
         return true
     }
     return false
