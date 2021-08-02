@@ -29,7 +29,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.qText}
           type="textarea"
-          qText="qText"
           placeholder="Текст питання"
         />
       </FormGroup>
@@ -40,7 +39,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.rigthAnswer}
           type="textarea"
-          rigthAnswer="rigthAnswer"
           placeholder="Правильна відповідь"
         />
       </FormGroup>
@@ -51,7 +49,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.answersList0}
           type="textarea"
-          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
         <br />
@@ -60,7 +57,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.answersList1}
           type="textarea"
-          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
         <br />
@@ -69,7 +65,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.answersList2}
           type="textarea"
-          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
         <br />
@@ -78,7 +73,6 @@ const AddTest = (props) => {
           onChange={formik.handleChange}
           value={formik.values.answersList3}
           type="textarea"
-          answersList="answersList"
           placeholder="Варіанти відповіді"
         />
         <br />
