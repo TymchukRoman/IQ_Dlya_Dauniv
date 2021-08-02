@@ -1,0 +1,10 @@
+.NavLinks{
+    color: antiquewhite;
+    transition: color 0.5s;
+    
+}
+.NavLinks:hover {
+    color: rgb(85, 34, 180);
+   
+  }
+  
