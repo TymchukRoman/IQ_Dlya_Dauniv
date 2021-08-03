@@ -22,6 +22,5 @@ export const postData = (data) => {
     answerList: [...array],
     login: data.login,
     password: data.password,
-    nickname: data.nickname,
   });
 };
