@@ -22,6 +22,16 @@ const AddTest = (props) => {
   });
   return (
     <Form onSubmit={formik.handleSubmit}>
+         <FormGroup>
+        <Label for="name">Nickname</Label>
+        <Input
+          name="nickname"
+          onChange={formik.handleChange}
+          value={formik.values.nickname}
+          type="textarea"
+          placeholder="Nickname"
+        />
+      </FormGroup>
       <FormGroup>
         <Label for="name">Name of qText</Label>
         <Input

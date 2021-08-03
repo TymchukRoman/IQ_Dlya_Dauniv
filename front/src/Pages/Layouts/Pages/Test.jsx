@@ -1,9 +1,21 @@
 // import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { getQuestions } from "../../../Axios/api";
-import { Carousel } from "react-bootstrap";
+import { getQuestions} from "../../../Axios/api";
+import {Carousel } from "react-bootstrap";
+import {Input,Button, Label,} from "reactstrap"
+// import { useFormik } from "formik";
 
+// const formik = useFormik({
+//   initialValues: {
+//     answer: "",
+//     nickname:"",
+//   },
+//   onSubmit: (values) => {
+//     postData(values);
+//   },
+// });
 const Test = () => {
+  
   const [question, setQuestion] = useState([]);
   useEffect(() => {
     getQuestions().then((response) => {
@@ -32,7 +44,11 @@ const Test = () => {
           );
         })}
       </Carousel>
+      
+        <Label for="name">Nickname</Label>
+        <Input type="text"/>
+        <Button>Submit</Button>
     </div>
-  );
+ );
 };
 export default Test;
