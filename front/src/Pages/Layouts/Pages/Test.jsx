@@ -37,7 +37,9 @@ const Test = () => {
               <Carousel.Caption>
                 <h3>{q.qText}</h3>
                 {q.answerList.map((item) => {
-                  return <div>{item}</div>;
+                  return (<div>
+                  <div>{item}</div> <input type="radio"></input>
+                  </div>); 
                 })}
               </Carousel.Caption>
             </Carousel.Item>

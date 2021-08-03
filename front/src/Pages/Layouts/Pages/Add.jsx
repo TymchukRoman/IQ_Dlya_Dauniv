@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { useFormik } from "formik";
 import { postData } from "../../../Axios/api";
+import classes from "./Add.module.css"
 
 const AddTest = (props) => {
   const formik = useFormik({
@@ -22,70 +23,74 @@ const AddTest = (props) => {
   });
   return (
     <Form onSubmit={formik.handleSubmit}>
-         <FormGroup>
-        <Label for="name">Nickname</Label>
-        <Input
-          name="nickname"
-          onChange={formik.handleChange}
-          value={formik.values.nickname}
-          type="textarea"
-          placeholder="Nickname"
-        />
-      </FormGroup>
+      <fieldset >
+        <FormGroup>
+          <Label for="name">Name of qText</Label>
+          <Input
+            name="qText"
+            onChange={formik.handleChange}
+            value={formik.values.qText}
+            type="textarea"
+            placeholder="Текст питання"
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label for="name">right_answer</Label>
+          <Input
+            name="rigthAnswer"
+            onChange={formik.handleChange}
+            value={formik.values.rigthAnswer}
+            type="textarea"
+            placeholder="Правильна відповідь"
+          />
+        </FormGroup>
+      </fieldset>
       <FormGroup>
-        <Label for="name">Name of qText</Label>
-        <Input
-          name="qText"
-          onChange={formik.handleChange}
-          value={formik.values.qText}
-          type="textarea"
-          placeholder="Текст питання"
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label for="name">right_answer</Label>
-        <Input
-          name="rigthAnswer"
-          onChange={formik.handleChange}
-          value={formik.values.rigthAnswer}
-          type="textarea"
-          placeholder="Правильна відповідь"
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label for="name">answersList</Label>
-        <Input
-          name="answersList0"
-          onChange={formik.handleChange}
-          value={formik.values.answersList0}
-          type="textarea"
-          placeholder="Варіанти відповіді"
-        />
-        <br />
-        <Input
-          name="answersList1"
-          onChange={formik.handleChange}
-          value={formik.values.answersList1}
-          type="textarea"
-          placeholder="Варіанти відповіді"
-        />
-        <br />
-        <Input
-          name="answersList2"
-          onChange={formik.handleChange}
-          value={formik.values.answersList2}
-          type="textarea"
-          placeholder="Варіанти відповіді"
-        />
-        <br />
-        <Input
-          name="answersList3"
-          onChange={formik.handleChange}
-          value={formik.values.answersList3}
-          type="textarea"
-          placeholder="Варіанти відповіді"
-        />
-        <br />
+        <fieldset>
+          <label className={classes.Field}>
+            <Label for="name">answersList</Label>
+            <Input
+              name="answersList0"
+              onChange={formik.handleChange}
+              value={formik.values.answersList0}
+              type="textarea"
+              placeholder="Варіанти відповіді"
+            />
+          </label>
+          <label className={classes.Field}>
+            <Input
+              name="answersList1"
+              onChange={formik.handleChange}
+              value={formik.values.answersList1}
+              type="textarea"
+              placeholder="Варіанти відповіді"
+            />
+          </label>
+
+          <br />
+        </fieldset>
+        <fieldset>
+          <label className={classes.Field}>
+            <Input
+              name="answersList2"
+              onChange={formik.handleChange}
+              value={formik.values.answersList2}
+              type="textarea"
+              placeholder="Варіанти відповіді"
+            />
+          </label>
+
+          <label className={classes.Field}>
+            <Input
+              name="answersList3"
+              onChange={formik.handleChange}
+              value={formik.values.answersList3}
+              type="textarea"
+              placeholder="Варіанти відповіді"
+            />
+          </label>
+          <br />
+        </fieldset>
       </FormGroup>
 
       <div className="form-group">
