@@ -140,7 +140,7 @@ app.post('/checkResult', async (req, res) => {
             date: new Date(Date.now()).toISOString(),
         });
         const savedR = await testResult.save();
-        res.send(savedR);
+        res.send(savedR._id);
     })
 
 })
@@ -154,11 +154,28 @@ app.get('/getResults', (req, res) => {
             res.status(404).json({ err });
             return;
         } else {
-            res.send({ data: found });
+            res.send(found);
         }
     })
 })
 
 ///Get results end
+///Get single result
+
+app.post('/getResult', (req, res) => {
+    Result.findOne({_id: req.body.id}, (err, found) => {
+        if (!found) {
+            res.status(404).json({ err });
+            return;
+        } else {
+            res.send({
+                nickname: found.nickname,
+                questions: [...found.questions],
+                points: found.points,
+                date: found.date
+            });
+        }
+    })
+})
 
 app.listen(4000, () => console.log(`Listening on port 4000`));
