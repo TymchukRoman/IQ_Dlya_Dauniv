@@ -74,12 +74,13 @@ const Test = () => {
                 className="d-block w-100"
                 src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
               ></img>
-              <Carousel.Caption>
+              <Carousel.Caption >
+                <div className={classes.case} >
                 <h3>{q.qText}</h3>
                 {q.answerList.map((item) => {
                   return (
                     <div key={item}>
-                      <div classname={classes.case}>
+                      <div>
                         {checkSelected(q._id, item) === true ? (
                           <button
                             className={classes.TestBtnActive}
@@ -103,6 +104,7 @@ const Test = () => {
                     </div>
                   );
                 })}
+                </div>
               </Carousel.Caption>
             </Carousel.Item>
           );
