@@ -1,34 +1,74 @@
 // import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { getQuestions} from "../../../Axios/api";
-import {Carousel } from "react-bootstrap";
-import {Input,Button, Label,} from "reactstrap"
-// import { useFormik } from "formik";
+import { getQuestions } from "../../../Axios/api";
+import { Carousel } from "react-bootstrap";
+import { Input, Button, Label } from "reactstrap";
+import classes from "./Test.module.css";
 
-// const formik = useFormik({
-//   initialValues: {
-//     answer: "",
-//     nickname:"",
-//   },
-//   onSubmit: (values) => {
-//     postData(values);
-//   },
-// });
 const Test = () => {
-  
+  //eslint-disable-next-line
+  const [refresh, setRefresh] = useState(0);
   const [question, setQuestion] = useState([]);
   useEffect(() => {
     getQuestions().then((response) => {
-      console.log(response);
-      setQuestion([...response.data.data]);
+      response.data.data.forEach((item) => {});
+      // (response.data.data);
+      setQuestion(
+        response.data.data.map((item) => {
+          return {
+            qText: item.qText,
+            answerList: item.answerList,
+            _id: item._id,
+            author: item.author,
+            answer: "",
+          };
+        })
+      );
     });
   }, []);
+
+  const refreshPage = () => {
+    setRefresh(refresh + 1);
+  };
+
+  const setAnswer = (qId, answer) => {
+    const updatedList = question.map((item) => {
+      let answerChange = item.answer;
+      if (qId === item._id) {
+        answerChange = answer;
+      }
+
+      const rewrite = {
+        qText: item.qText,
+        answerList: item.answerList,
+        _id: item._id,
+        author: item.author,
+        answer: answerChange,
+      };
+      return { ...rewrite };
+    });
+    setQuestion([...updatedList]);
+    refreshPage();
+    console.log(checkSelected(qId, answer));
+  };
+
+  const checkSelected = (qId, answer) => {
+    let toReturn = false
+    question.forEach((item) => {
+      if (item._id === qId && item.answer === answer) {
+        toReturn = true
+        console.log("true");
+      }
+    });
+    return toReturn;
+  };
+
   return (
     <div>
       <Carousel variant="dark">
         {question.map((q) => {
           return (
-            <Carousel.Item >
+            <Carousel.Item key={q._id}>
               <img
                 alt=""
                 className="d-block w-100"
@@ -37,20 +77,42 @@ const Test = () => {
               <Carousel.Caption>
                 <h3>{q.qText}</h3>
                 {q.answerList.map((item) => {
-                  return (<div>
-                  <div>{item}</div> <input type="radio"></input>
-                  </div>); 
+                  return (
+                    <div key={item}>
+                      <div classname={classes.case}>
+                        {checkSelected(q._id, item) === true ? (
+                          <button
+                            className={classes.TestBtnActive}
+                            onClick={() => {
+                              setAnswer(q._id, item);
+                            }}
+                          >
+                            {item}
+                          </button>
+                        ) : (
+                          <button
+                            className={classes.TestBtn}
+                            onClick={() => {
+                              setAnswer(q._id, item);
+                            }}
+                          >
+                            {item}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
                 })}
               </Carousel.Caption>
             </Carousel.Item>
           );
         })}
       </Carousel>
-      
-        <Label for="name">Nickname</Label>
-        <Input type="text"/>
-        <Button>Submit</Button>
+
+      <Label for="name">Nickname</Label>
+      <Input type="text" />
+      <Button>Submit</Button>
     </div>
- );
+  );
 };
 export default Test;
