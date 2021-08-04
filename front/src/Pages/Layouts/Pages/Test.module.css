@@ -1,3 +1,8 @@
+.case{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 65px;
+}
 
 .TestBtn {
     min-width: 300px;
@@ -9,15 +14,16 @@
     font-weight: 700;
     color: #bdbdc2;
     background: #470864;
-  background: linear-gradient(90deg, rgb(40, 19, 133) 0%, rgb(127, 53, 211) 100%);
+  background: linear-gradient(90deg, rgb(27, 25, 167) 0%, rgb(160, 25, 187) 100%);
     border: none;
-    border-radius: 1000px;
+    border-radius: 10000px;
     box-shadow: 12px 12px 24px rgba(79,209,197,.64);
     transition: all 0.3s ease-in-out 0s;
     cursor: pointer;
     outline: none;
     position: relative;
     padding: 10px;
+    margin: 2px;
     }
 .TestBtn::before, .TestBtnActive::before {
     content: '';
@@ -25,7 +31,7 @@
       min-width: calc(300px + 12px);
       min-height: calc(60px + 12px);
       /* border: 6px solid #00FFCB; */
-      box-shadow: 0 0 60px rgba(19, 37, 192, 0.64);
+      box-shadow: 0 0 60px rgba(60, 68, 134, 0.64);
       position: absolute;
       top: 50%;
       left: 50%;
@@ -111,7 +117,7 @@
   0% {
     width: 30px;
     height: 30px;
-    opacity: 1;
+    /* opacity: 1; */
   }
   100% {
     width: 400px;
