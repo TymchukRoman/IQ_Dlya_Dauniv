@@ -37,6 +37,8 @@ app.get('/getQuestions', async (req, res) => {
         }
     })
     Promise.all(getArray(idArray.length - 1).map(async (index) => {
+        console.log("index = ",index)
+        console.log(idArray[index])
         let result;
         await Question.find({ _id: idArray[index] }, (err, found) => {
             if (!found) {
