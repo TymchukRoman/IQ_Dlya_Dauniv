@@ -4,13 +4,12 @@ import {
     Navbar,
   } from "react-bootstrap";
   import { Link } from "react-router-dom";
-  import paths from "./paths";
+  import paths from "../Routers/paths";
   import classes from "./Layouts.module.css"
   
-  const Layout = ({ children }) => {
+  const NavigationBar = () => {
     return (
-      <div>
-        <Navbar bg="dark" expand="lg">
+        <Navbar bg="dark" expand='md'>
           <Container >
             <Navbar.Brand as={Link} to={paths.main} >
               <p className={classes.NavLinks}>IQ </p>
@@ -28,8 +27,6 @@ import {
             </Nav>
           </Container>
         </Navbar>
-        <Container>{children}</Container>
-      </div>
     );
   };
-  export default Layout;
+  export default NavigationBar;
