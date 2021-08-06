@@ -1,11 +1,16 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const Admin = require('./models/admin');
+const User = require('./models/user')
 const Question = require('./models/question');
+const bcrypt = require('bcryptjs')
 const Result = require('./models/result');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const app = express();
 const questionValidation = require('./validators/questionValidation')
+const dotenv = require('dotenv');
+const auth = require("./middleware/auth");
 
 mongoose.connect("mongodb://localhost:27017/iq", {
     useNewUrlParser: true,
@@ -17,6 +22,8 @@ mongoose.connection.on("error", err => {
 mongoose.connection.on("connected", (err, res) => {
     console.log("mongoose is connected")
 })
+
+dotenv.config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -37,7 +44,7 @@ app.get('/getQuestions', async (req, res) => {
         }
     })
     Promise.all(getArray(idArray.length - 1).map(async (index) => {
-        console.log("index = ",index)
+        console.log("index = ", index)
         console.log(idArray[index])
         let result;
         await Question.find({ _id: idArray[index] }, (err, found) => {
@@ -76,7 +83,7 @@ const getArray = (max) => {
 
 app.post('/addQuestion', async (req, res) => {
     let err = questionValidation(req.body.qText, req.body.rigthAnswer, req.body.answerList);
-    if (err.length > 0){
+    if (err.length > 0) {
         res.send(err)
         return
     }
@@ -165,7 +172,7 @@ app.get('/getResults', (req, res) => {
 ///Get single result
 
 app.post('/getResult', (req, res) => {
-    Result.findOne({_id: req.body.id}, (err, found) => {
+    Result.findOne({ _id: req.body.id }, (err, found) => {
         if (!found) {
             res.status(404).json({ err });
             return;
@@ -179,5 +186,60 @@ app.post('/getResult', (req, res) => {
         }
     })
 })
+
+///Get single result end
+///Authentication 
+
+app.post('/user/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (user && (await bcrypt.compare(password, user.password))) {
+        const token = jwt.sign(
+            { user_id: user._id, email },
+            process.env.TOKEN_SECRET,
+            {
+                expiresIn: "2h",
+            }
+        );
+        res.status(200).json({
+            nickname: user.nickname,
+            totalScore: user.totalScore,
+            results: user.results,
+            token
+        });
+    }
+    res.status(400).send("Invalid Credentials");
+})
+
+app.post('/user/register', async (req, res) => {
+    const { nickname, age, email, password } = req.body;
+    const oldUser = await User.findOne({ email });
+    if (oldUser) {
+        return res.status(409).send("User Already Exist. Please Login");
+    }
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+        nickname,
+        age,
+        password: encryptedPassword,
+        email,
+        results: [],
+        totalScore: 0
+    });
+    const token = jwt.sign(
+        { user_id: user._id, email },
+        process.env.TOKEN_SECRET,
+        { expiresIn: "2h" }
+    );
+    user.token = token;
+    const savedUser = await user.save();
+    res.json(token);
+    return;
+})
+
+app.post("/user/me", auth, (req, res) => {
+    res.status(200).send("Welcome");
+});
+///Authentication end
 
 app.listen(4000, () => console.log(`Listening on port 4000`));
