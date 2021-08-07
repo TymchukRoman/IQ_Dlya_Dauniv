@@ -10,7 +10,7 @@ const resultSchema = new mongoose.Schema({
         required: true,
     },
     points: {
-        type: String,
+        type: Number,
         required: true,
     },
     date: {
