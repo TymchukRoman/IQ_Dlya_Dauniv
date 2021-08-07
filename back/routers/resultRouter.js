@@ -29,7 +29,7 @@ router.post('/checkResult', auth, async (req, res) => {
         const testResult = new Result({
             userId: req.user.user_id,
             questions: [...req.body.answers],
-            points: points + "/" + req.body.answers.length,
+            points: points,
             date: new Date(Date.now()).toISOString(),
         });
         const savedR = await testResult.save();
@@ -66,5 +66,57 @@ router.post('/getResult', (req, res) => {
         }
     })
 })
+
+router.get('/getLeaderboards', async (req, res) => {
+    let resultList
+    await Result.find({}, (err, found) => {
+        if (!found) {
+            res.status(404).json({ err });
+            return;
+        } else {
+            resultList = [...found];
+            return
+        }
+    })
+    let infoList = []
+    Promise.all(calcTop(resultList).map(async (item) => {
+        let name
+        await User.findOne({ _id: item[0] }, (err, found) => {
+            if (!found) {
+                name = "Deleted user"
+                return;
+            } else {
+                name = found.nickname
+                return
+            }
+        })
+        infoList.push({
+            name: name,
+            points: item[1]
+        })
+    })).then(() => {
+        res.send(infoList)
+    })
+
+})
+
+const calcTop = (list) => {
+    let unsorted = [];
+    list.forEach((item) => {
+        let added = false
+        for (i = 0; i < unsorted.length || added; i++) {
+            if (unsorted[i][0] == item.userId) {
+                unsorted[i][1] += item.points
+                added = true
+                break;
+            }
+        }
+        if (!added) {
+            unsorted.push([item.userId, item.points])
+        }
+    })
+    unsorted.sort((a, b) => b[1] - a[1]);
+    return [unsorted[0], unsorted[1], unsorted[2]]
+}
 
 module.exports = router
