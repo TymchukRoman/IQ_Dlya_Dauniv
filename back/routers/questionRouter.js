@@ -17,16 +17,9 @@ router.get('/getQuestions', async (req, res) => {
         }
     })
     Promise.all(getArray(idArray.length - 1).map(async (index) => {
-        console.log("index = ", index)
-        console.log(idArray[index])
-        let result;
-        await Question.find({ _id: idArray[index] }, (err, found) => {
-            if (!found) {
-                result = null;
-            } else {
-                result = found[0];
-            }
-        })
+
+        let result = await getById(idArray[index])
+
         qArray.push({
             answerList: result.answerList,
             _id: result._id,
@@ -38,6 +31,21 @@ router.get('/getQuestions', async (req, res) => {
         return
     })
 })
+
+const getById = async (id) => {
+    let result;
+    await Question.find({ _id: id }, (err, found) => {
+        if (!found) {
+            result = null;
+        } else {
+            result = found[0];
+        }
+    })
+    if (!result) {
+        result = await getById(id)
+    }
+    return result
+}
 
 const getArray = (max) => {
     let arr = []

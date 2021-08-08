@@ -12,3 +12,7 @@
 .Field[type=text]:focus {
     border: 3px solid #555;
 }
+
+.addForm{
+    padding: 20px;
+}

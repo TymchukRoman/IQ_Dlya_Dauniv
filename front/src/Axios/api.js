@@ -24,3 +24,23 @@ export const postData = (data) => {
     password: data.password,
   });
 };
+
+export const loginAPI = (data) => {
+  return client.post("user/login", {
+    email: data.email,
+    password: data.password
+  })
+}
+
+export const registerAPI = (data) => {
+  return client.post("user/register", {
+    email: data.email,
+    password: data.password,
+    age: data.age,
+    nickname: data.nickname
+  })
+}
+
+export const meAPI = (token) => {
+  return client.post("user/me", { token })
+}

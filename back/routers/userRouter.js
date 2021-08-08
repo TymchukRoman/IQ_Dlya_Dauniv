@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
         });
         return
     }
-    res.status(400).send("Invalid Credentials");
+    res.send("Invalid Credentials");
     return
 })
 
@@ -63,7 +63,7 @@ router.post('/register', async (req, res) => {
     );
     user.token = token;
     const savedUser = await user.save();
-    res.json(token);
+    res.send(token);
     return;
 })
 

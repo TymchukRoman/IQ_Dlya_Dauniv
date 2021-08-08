@@ -1,9 +1,9 @@
-const validateLogin = (login, password) => {
+const validateLogin = (email, password) => {
     let errs = []
-    if(!login){
-        errs.push("Login is required")
+    if (!email) {
+        errs.push("Email is required")
     }
-    if(!password){
+    if (!password) {
         errs.push("Password is required")
     }
     return errs
