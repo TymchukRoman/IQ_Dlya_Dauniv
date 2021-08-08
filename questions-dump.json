@@ -1,6 +1,3 @@
-{"_id":{"$oid":"610474a3ee07152f52bf8283"},"answerList":["Go slow","Go fast","Stay","Fly"],"qText":"How to run?","rigthAnswer":"Go fast","author":"Dova(n) Roma","date":"2021-07-30T21:52:35.608Z","__v":0}
-{"_id":{"$oid":"61047507ee07152f52bf8285"},"answerList":["70 000 002","7 000 000","7 000 002","27 000 000"],"qText":"Two plus seven million?","rigthAnswer":"7 000 002","author":"Dova(n) Roma","date":"2021-07-30T21:54:15.278Z","__v":0}
-{"_id":{"$oid":"610475d5ee07152f52bf8287"},"answerList":["Roma","Taras","Andrew","Yura"],"qText":"Who is dwarf?","rigthAnswer":"Roma","author":"Dova(n) Roma","date":"2021-07-30T21:57:41.409Z","__v":0}
 {"_id":{"$oid":"61047643ee07152f52bf8289"},"answerList":["K-pop","Pop","Bluz","Jazz"],"qText":"Best music ever?","rigthAnswer":"K-pop","author":"Dova(n) Roma","date":"2021-07-30T21:59:31.413Z","__v":0}
 {"_id":{"$oid":"61047675ee07152f52bf828b"},"answerList":["Air flow","Lava flow","Water flow","Rap flow"],"qText":"What is wind?","rigthAnswer":"Air flow","author":"Dova(n) Roma","date":"2021-07-30T22:00:21.099Z","__v":0}
 {"_id":{"$oid":"61047711ee07152f52bf828d"},"answerList":["Space","Sea","Ocean","On my hands"],"qText":"Where is Sun?","rigthAnswer":"Space","author":"Dova(n) Roma","date":"2021-07-30T22:02:57.898Z","__v":0}
@@ -9,7 +6,7 @@
 {"_id":{"$oid":"61047911ee07152f52bf8293"},"answerList":["Stupid person","Clever person","Taras","Windows user"],"qText":"What is 'дебіл' meaning?","rigthAnswer":"Stupid person","author":"Dova(n) Roma","date":"2021-07-30T22:11:29.303Z","__v":0}
 {"_id":{"$oid":"61047a06ee07152f52bf8295"},"answerList":["Hidden in leafs village leader","Roman","Yarl of Windhelm","King of the North"],"qText":"Who is hokage?","rigthAnswer":"Hidden in leafs village leader","author":"Dova(n) Roma","date":"2021-07-30T22:15:34.750Z","__v":0}
 {"_id":{"$oid":"61047b2aee07152f52bf8297"},"answerList":["Light","Sound","Bugati Veyron","Your life"],"qText":"What is the fastest?","rigthAnswer":"Light","author":"Dova(n) Roma","date":"2021-07-30T22:20:26.648Z","__v":0}
-{"_id":{"$oid":"6106ae7d29e7b824d5a57008"},"answerList":["data.answerList","data.answerList","data.answerList","data.answerList"],"qText":"data.qText","rigthAnswer":"data.rigthAnswer","author":"author","date":"2021-08-01T14:23:57.687Z","__v":0}
-{"_id":{"$oid":"6106bbe82c4c6435302b5705"},"answerList":["f","d","s","a"],"qText":"data.qText","rigthAnswer":"data.rigthAnswer","author":"RomanI","date":"2021-08-01T15:21:12.766Z","__v":0}
-{"_id":{"$oid":"6106bc11c187393568661269"},"answerList":["f","d","s","a"],"qText":"data.qText","rigthAnswer":"data.rigthAnswer","author":"RomanI","date":"2021-08-01T15:21:53.013Z","__v":0}
-{"_id":{"$oid":"6106bd3c3b41503665b61c41"},"answerList":["f","d","s","a"],"qText":"data.qText","rigthAnswer":"data.rigthAnswer","author":"RomanI","date":"2021-08-01T15:26:52.407Z","__v":0}
+{"_id":{"$oid":"610474a3ee07152f52bf8283"},"answerList":["Go slow","Go fast","Stay","Fly"],"qText":"How to run?","rigthAnswer":"Go fast","author":"Dova(n) Roma","date":"2021-07-30T21:52:35.608Z","__v":0}
+{"_id":{"$oid":"61047507ee07152f52bf8285"},"answerList":["70 000 002","7 000 000","7 000 002","27 000 000"],"qText":"Two plus seven million?","rigthAnswer":"7 000 002","author":"Dova(n) Roma","date":"2021-07-30T21:54:15.278Z","__v":0}
+{"_id":{"$oid":"610475d5ee07152f52bf8287"},"answerList":["Roma","Taras","Andrew","Yura"],"qText":"Who is dwarf?","rigthAnswer":"Roma","author":"Dova(n) Roma","date":"2021-07-30T21:57:41.409Z","__v":0}
+{"_id":{"$oid":"610fc1e6b6445915e7bd468e"},"answerList":["CLC","BP","GI","DC"],"qText":"How you like that?","rigthAnswer":"BP","author":"RomanT","date":"2021-08-08T11:37:10.605Z","__v":0}
