@@ -22,7 +22,7 @@ const AddTest = (props) => {
     },
   });
   return (
-    <Form onSubmit={formik.handleSubmit}>
+    <Form onSubmit={formik.handleSubmit} className={classes.addForm}>
       <fieldset >
         <FormGroup>
           <Label for="name">Name of qText</Label>
@@ -40,7 +40,7 @@ const AddTest = (props) => {
             name="rigthAnswer"
             onChange={formik.handleChange}
             value={formik.values.rigthAnswer}
-            type="textarea"
+            type="text"
             placeholder="Правильна відповідь"
           />
         </FormGroup>
@@ -53,7 +53,7 @@ const AddTest = (props) => {
               name="answersList0"
               onChange={formik.handleChange}
               value={formik.values.answersList0}
-              type="textarea"
+              type="text"
               placeholder="Варіанти відповіді"
             />
           </label>
@@ -62,7 +62,7 @@ const AddTest = (props) => {
               name="answersList1"
               onChange={formik.handleChange}
               value={formik.values.answersList1}
-              type="textarea"
+              type="text"
               placeholder="Варіанти відповіді"
             />
           </label>
@@ -75,7 +75,7 @@ const AddTest = (props) => {
               name="answersList2"
               onChange={formik.handleChange}
               value={formik.values.answersList2}
-              type="textarea"
+              type="text"
               placeholder="Варіанти відповіді"
             />
           </label>
@@ -85,7 +85,7 @@ const AddTest = (props) => {
               name="answersList3"
               onChange={formik.handleChange}
               value={formik.values.answersList3}
-              type="textarea"
+              type="text"
               placeholder="Варіанти відповіді"
             />
           </label>
@@ -93,29 +93,31 @@ const AddTest = (props) => {
         </fieldset>
       </FormGroup>
 
-      <div className="form-group">
-        <label>login</label>
-        <input
-          name="login"
-          onChange={formik.handleChange}
-          value={formik.values.login}
-          type="login"
-          className="form-control"
-          placeholder="Enter login"
-        />
-      </div>
+      <FormGroup>
+        <div className="form-group">
+          <label>login</label>
+          <input
+            name="login"
+            onChange={formik.handleChange}
+            value={formik.values.login}
+            type="login"
+            className="form-control"
+            placeholder="Enter login"
+          />
+        </div>
 
-      <div className="form-group">
-        <label>Password</label>
-        <input
-          name="password"
-          onChange={formik.handleChange}
-          value={formik.values.password}
-          type="password"
-          className="form-control"
-          placeholder="Enter password"
-        />
-      </div>
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            name="password"
+            onChange={formik.handleChange}
+            value={formik.values.password}
+            type="password"
+            className="form-control"
+            placeholder="Enter password"
+          />
+        </div>
+      </FormGroup>
       <Button>Submit</Button>
     </Form>
   );
