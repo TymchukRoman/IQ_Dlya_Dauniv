@@ -10,6 +10,8 @@ const Test = () => {
   const [refresh, setRefresh] = useState(0);
   const [question, setQuestion] = useState([]);
   const [show, setShow] = useState(false);
+  const [hints, setHints] = useState([])
+  const [index, setIndex] = useState(0);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -30,12 +32,23 @@ const Test = () => {
           };
         })
       );
+      let number = 0;
+      setHints(response.data.data.map((item) => {
+        let exNumber = number;
+        number++;
+        return {
+          qId: item._id,
+          number: exNumber,
+          status: "black"
+        };
+      })
+      )
     });
   }, []);
 
   useEffect(() => {
     checkReady()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question]);
 
   const refreshPage = () => {
@@ -58,8 +71,30 @@ const Test = () => {
       };
     });
     setQuestion([...updatedList]);
+    setActive(qId);
     refreshPage();
   };
+
+  const setActive = (qId) => {
+    console.log(hints)
+    console.log("-")
+    console.log(qId)
+    console.log("-")
+    setHints(hints.map((item) => {
+      if (item.qId === qId) {
+        return {
+          qId: item.qId,
+          number: item.number,
+          status: "green"
+        }
+      }
+      return {
+        qId: item.qId,
+        number: item.number,
+        status: item.status
+      }
+    }))
+  }
 
   const checkSelected = (qId, answer) => {
     let toReturn = false
@@ -78,15 +113,18 @@ const Test = () => {
         counter++;
       }
     })
-    console.log(counter)
     if (counter === 10) {
       handleShow()
     }
   }
 
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
+
   return (
     <div>
-      <Carousel variant="dark" pause="hover" fade>
+      <Carousel activeIndex={index} onSelect={handleSelect} variant="dark" pause="hover" indicators={false} fade>
         {question.map((q) => {
           return (
             <Carousel.Item key={q._id}>
@@ -96,6 +134,7 @@ const Test = () => {
                 src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
               ></img>
               <Carousel.Caption >
+                <Hints hints={hints} handleSelect={handleSelect} index={index} />
                 <div className={classes.case} >
                   <h3>{q.qText}</h3>
                   {q.answerList.map((item) => {
@@ -152,5 +191,28 @@ const Test = () => {
     </div>
   );
 };
+
+const Hints = (props) => {
+  return <div>
+    {props.hints.map((item) => {
+      if(item.number === props.index){
+        return <div
+        className={classes.hint}
+        key={item.qId}
+        onClick={() => { props.handleSelect(item.number) }}
+        style={{ color: item.status, fontWeight: "bold" }}>
+        {"  " + (item.number + 1) + "  "}
+      </div>
+      }
+      return <div
+        className={classes.hint}
+        key={item.qId}
+        onClick={() => { props.handleSelect(item.number) }}
+        style={{ color: item.status }}>
+        {"  " + (item.number + 1) + "  "}
+      </div>
+    })}
+  </div>
+}
 
 export default Test;
