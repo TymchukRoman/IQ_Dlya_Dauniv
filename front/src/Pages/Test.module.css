@@ -118,16 +118,29 @@
   color: #313133;
   transform: translateY(1px);
 }
+
 /* 
 @keyframes ring {
   0% {
     width: 30px;
     height: 30px;
     /* opacity: 1; */
-  /* }
+
+/* }
   100% {
     width: 400px;
     height: 400px;
     opacity: 0;
   }
-} */ 
+} */
+
+
+.hint {
+  display: inline;
+  font-size: 20px;
+}
+
+.hint:hover {
+  cursor: pointer;
+  font-size: 30px;
+}
