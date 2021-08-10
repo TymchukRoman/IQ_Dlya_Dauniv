@@ -6,7 +6,7 @@ const User = require('../models/user');
 const auth = require("../middleware/auth");
 const answerValidation = require('../validators/answerValidation');
 
-router.post('/checkResult', auth, async (req, res) => {
+router.post('/checkResults', auth, async (req, res) => {
     let err = answerValidation(req.body.answers);
     if (err.length > 0) {
         res.send(err)
@@ -32,11 +32,20 @@ router.post('/checkResult', auth, async (req, res) => {
             points: points,
             date: new Date(Date.now()).toISOString(),
         });
+        writeUserResult(testResult.points, testResult._id, req.user.user_id)
         const savedR = await testResult.save();
         res.send(savedR._id);
         return
     })
 })
+
+const writeUserResult = async (points, resultId, user_id) => {
+    let user = await User.findOne({ _id: user_id });
+    let results = [...user.results]
+    let score = user.totalScore
+    await User.updateOne({ _id: user_id }, { results: [...results, resultId], totalScore: (score + points) });
+    return
+}
 
 router.get('/getResults', (req, res) => {
     Result.find({}, (err, found) => {

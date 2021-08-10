@@ -2,7 +2,7 @@ const paths = {
     main: '/main',
     test: '/test',
     add: '/add',
-    results: '/results',
+    leaderboards: '/leaderboards',
     login: '/login',
     register: '/register'
 }

@@ -3,7 +3,7 @@ import AddTest from "../Pages/Add";
 import Login from "../Pages/Auth/Login";
 import Register from "../Pages/Auth/Register";
 import Home from "../Pages/MainPage";
-import Results from "../Pages/Results";
+import Leaderboards from "../Pages/Leaderboards";
 import Test from "../Pages/Test";
 import paths from "./paths";
 
@@ -19,8 +19,8 @@ const Routers = [
     exact: true,
   },
   {
-    path: paths.results,
-    Component: Results,
+    path: paths.leaderboards,
+    Component: Leaderboards,
     exact: true,
   },
   {
@@ -47,7 +47,7 @@ const RootRouter = (props) => {
         <Route key={path} exact={exact} path={path}>
           {(path === "/login" || path === "/register")
             ? <Component me={props.me} />
-            : <Component  />
+            : <Component />
           }
         </Route>
       ))}

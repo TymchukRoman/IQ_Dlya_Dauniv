@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { useFormik } from "formik";
 import { postData } from "../Axios/api";
-import classes from "./Add.module.css"
+import classes from "./styles/Add.module.css"
 
 const AddTest = (props) => {
   const formik = useFormik({
