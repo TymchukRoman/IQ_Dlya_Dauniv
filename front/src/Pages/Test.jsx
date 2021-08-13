@@ -1,9 +1,9 @@
 // import { useFormik } from "formik";
 import { useEffect, useState } from "react";
-import { getQuestions } from "../Axios/api";
+import { checkResult, getQuestions } from "../Axios/api";
 import { Carousel, Modal } from "react-bootstrap";
 import { Input, Button } from "reactstrap";
-import classes from "./Test.module.css";
+import classes from "./styles/Test.module.css";
 
 const Test = () => {
   //eslint-disable-next-line
@@ -50,6 +50,20 @@ const Test = () => {
     checkReady()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [question]);
+
+  const submitResults = () => {
+    let token = localStorage.getItem('token')
+    let answers = question.map((item) => {
+      return {
+        id: item._id,
+        answer: item.answer
+      }
+    })
+    checkResult({
+      token,
+      answers: [...answers]
+    })
+  }
 
   const refreshPage = () => {
     setRefresh(refresh + 1);
@@ -182,8 +196,8 @@ const Test = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" onClick={() => { handleClose(); submitResults() }}>
+            Submit
           </Button>
         </Modal.Footer>
       </Modal>
@@ -195,14 +209,14 @@ const Test = () => {
 const Hints = (props) => {
   return <div>
     {props.hints.map((item) => {
-      if(item.number === props.index){
+      if (item.number === props.index) {
         return <div
-        className={classes.hint}
-        key={item.qId}
-        onClick={() => { props.handleSelect(item.number) }}
-        style={{ color: item.status, fontWeight: "bold" }}>
-        {"  " + (item.number + 1) + "  "}
-      </div>
+          className={classes.hint}
+          key={item.qId}
+          onClick={() => { props.handleSelect(item.number) }}
+          style={{ color: item.status, fontWeight: "bold" }}>
+          {"  " + (item.number + 1) + "  "}
+        </div>
       }
       return <div
         className={classes.hint}

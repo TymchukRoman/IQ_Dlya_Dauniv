@@ -8,6 +8,17 @@ export const getQuestions = async () => {
   return client.get("getQuestions");
 };
 
+export const getLeaderboards = async () => {
+  return client.get("getLeaderboards");
+};
+
+export const checkResult = async (data) => {
+  return client.post("checkResults", {
+    token: data.token,
+    answers: data.answers
+  })
+}
+
 export const postData = (data) => {
   let array = [
     data.answersList0,

@@ -1,7 +1,7 @@
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import paths from "../../Routers/paths";
-import classes from "../Layouts.module.css"
+import classes from "../styles/Layouts.module.css"
 
 const AuthLayout = (props) => {
 
