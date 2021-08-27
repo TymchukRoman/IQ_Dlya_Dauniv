@@ -21,10 +21,11 @@ router.post('/login', async (req, res) => {
             process.env.TOKEN_SECRET,
             { expiresIn: "2h", }
         );
-        res.status(200).json({
+        res.send({
             nickname: user.nickname,
             totalScore: user.totalScore,
             results: user.results,
+            type: user.type,
             token
         });
         return
@@ -52,6 +53,7 @@ router.post('/register', async (req, res) => {
         password: encryptedPassword,
         email,
         results: [],
+        type: "user",
         totalScore: 0
     });
     const token = jwt.sign(
@@ -68,7 +70,12 @@ router.post('/register', async (req, res) => {
 router.post("/me", auth, async (req, res) => {
     const userId = await req.user.user_id;
     const user = await User.findOne({ _id: userId });
-    res.status(200).send(user);
+    res.send({
+        nickname: user.nickname,
+        totalScore: user.totalScore,
+        results: user.results,
+        type: user.type
+    });
     return
 })
 
