@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     totalScore: {
         type: Number,
         required: false,
+    },
+    type: {
+        type: String,
+        required: true
     }
 }, { collection: 'users' })
 

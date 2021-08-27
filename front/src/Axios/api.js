@@ -53,5 +53,6 @@ export const registerAPI = (data) => {
 }
 
 export const meAPI = (token) => {
+  console.log(token)
   return client.post("user/me", { token })
 }
