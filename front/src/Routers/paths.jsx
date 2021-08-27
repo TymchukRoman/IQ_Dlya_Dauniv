@@ -4,6 +4,7 @@ const paths = {
     add: '/add',
     leaderboards: '/leaderboards',
     login: '/login',
-    register: '/register'
+    register: '/register',
+    profile: '/profile'
 }
 export default paths;

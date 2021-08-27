@@ -21,9 +21,7 @@ export default function App() {
     let token = localStorage.getItem('token')
     if (token && token !== "undefined") {
       meAPI(token).then((res) => {
-        setUser({
-          nickname: res.data.nickname
-        })
+        setUser({ ...res.data })
       })
     } else {
       setUser(null)
@@ -33,7 +31,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <NavigationBar user={user} me={me} />
-      <RootRouter me={me} />
+      <RootRouter user={user} me={me} />
     </BrowserRouter>
   );
 }
