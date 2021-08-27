@@ -11,7 +11,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     let err = loginValidation(email, password);
     if (err.length > 0) {
-        res.send(err)
+        res.send({ err })
         return
     }
     const user = await User.findOne({ email });
@@ -19,9 +19,7 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(
             { user_id: user._id, email },
             process.env.TOKEN_SECRET,
-            {
-                expiresIn: "2h",
-            }
+            { expiresIn: "2h", }
         );
         res.status(200).json({
             nickname: user.nickname,
@@ -31,7 +29,7 @@ router.post('/login', async (req, res) => {
         });
         return
     }
-    res.send("Invalid Credentials");
+    res.send({ err: "Invalid Credentials" });
     return
 })
 
@@ -39,12 +37,12 @@ router.post('/register', async (req, res) => {
     const { nickname, age, email, password } = req.body;
     let err = registerValidation(nickname, age, password, email);
     if (err.length > 0) {
-        res.send(err)
+        res.send({ err })
         return
     }
     const oldUser = await User.findOne({ email });
     if (oldUser) {
-        res.status(409).send("User Already Exist. Please Login");
+        res.send({ err: "User Already Exist. Please Login" });
         return
     }
     const encryptedPassword = await bcrypt.hash(password, 10);
@@ -59,7 +57,7 @@ router.post('/register', async (req, res) => {
     const token = jwt.sign(
         { user_id: user._id, email },
         process.env.TOKEN_SECRET,
-        { expiresIn: "2h" }
+        { expiresIn: "24h" }
     );
     user.token = token;
     const savedUser = await user.save();

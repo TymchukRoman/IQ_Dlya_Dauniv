@@ -9,7 +9,7 @@ const answerValidation = require('../validators/answerValidation');
 router.post('/checkResults', auth, async (req, res) => {
     let err = answerValidation(req.body.answers);
     if (err.length > 0) {
-        res.send(err)
+        res.send({ err })
         return
     }
     let points = 0;
@@ -50,7 +50,7 @@ const writeUserResult = async (points, resultId, user_id) => {
 router.get('/getResults', (req, res) => {
     Result.find({}, (err, found) => {
         if (!found) {
-            res.status(404).json({ err });
+            res.send({ err });
             return;
         } else {
             res.send(found);
@@ -62,7 +62,7 @@ router.get('/getResults', (req, res) => {
 router.post('/getResult', (req, res) => {
     Result.findOne({ _id: req.body.id }, (err, found) => {
         if (!found) {
-            res.status(404).json({ err });
+            res.send({ err });
             return;
         } else {
             res.send({
@@ -80,7 +80,7 @@ router.get('/getLeaderboards', async (req, res) => {
     let resultList
     await Result.find({}, (err, found) => {
         if (!found) {
-            res.status(404).json({ err });
+            res.send({ err });
             return;
         } else {
             resultList = [...found];

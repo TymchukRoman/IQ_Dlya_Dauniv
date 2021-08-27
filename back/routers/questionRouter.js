@@ -8,7 +8,7 @@ router.get('/getQuestions', async (req, res) => {
     let qArray = [];
     await Question.find({}, (err, found) => {
         if (!found) {
-            res.status(404).json({ err });
+            res.send({ err });
             return;
         } else {
             idArray = found.map((item) => {
@@ -63,7 +63,7 @@ const getArray = (max) => {
 router.post('/addQuestion', async (req, res) => {
     let err = questionValidation(req.body.qText, req.body.rigthAnswer, req.body.answerList);
     if (err.length > 0) {
-        res.send(err)
+        res.send({ err })
         return
     }
     if (isAdmin(req.body.login, req.body.password)) {
@@ -78,7 +78,7 @@ router.post('/addQuestion', async (req, res) => {
         res.send(savedQ);
         return;
     }
-    res.send("Wrong login or password")
+    res.send({ err: "Wrong login or password"})
     return;
 })
 
