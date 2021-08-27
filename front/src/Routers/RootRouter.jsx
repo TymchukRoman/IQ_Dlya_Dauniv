@@ -5,6 +5,7 @@ import Register from "../Pages/Auth/Register";
 import Home from "../Pages/MainPage";
 import Leaderboards from "../Pages/Leaderboards";
 import Test from "../Pages/Test";
+import Profile from "../Pages/Profile";
 import paths from "./paths";
 
 const Routers = [
@@ -38,6 +39,11 @@ const Routers = [
     Component: Register,
     exact: true,
   },
+  {
+    path: paths.profile,
+    Component: Profile,
+    exact: true,
+  }
 ];
 
 const RootRouter = (props) => {
@@ -47,7 +53,9 @@ const RootRouter = (props) => {
         <Route key={path} exact={exact} path={path}>
           {(path === "/login" || path === "/register")
             ? <Component me={props.me} />
-            : <Component />
+            : (path === "/profile") 
+              ? <Component user={props.user}/> 
+              : <Component />
           }
         </Route>
       ))}

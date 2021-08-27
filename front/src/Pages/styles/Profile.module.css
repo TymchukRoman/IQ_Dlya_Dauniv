@@ -1,0 +1,14 @@
+.inlineDivs {
+    display: inline-block;
+    margin-left: 50px;
+    padding-top: 25px;
+}
+
+.headerDiv {
+    margin-left: 50px;
+    margin-top: 25px;
+}
+
+.resultDiv {
+    display: inline-block;
+}

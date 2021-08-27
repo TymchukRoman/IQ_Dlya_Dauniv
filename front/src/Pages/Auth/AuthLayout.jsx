@@ -5,14 +5,14 @@ import classes from "../styles/Layouts.module.css"
 
 const AuthLayout = (props) => {
 
-    const logout = () => {
-        localStorage.setItem("token", "");
-        props.me()
-    }
+    // const logout = () => {
+    //     localStorage.setItem("token", "");
+    //     props.me()
+    // }
 
     return <Nav className="mr-auto">
         {props.user
-            ? <Nav.Link onClick={logout}>
+            ? <Nav.Link as={Link} to={paths.profile}>
                 <p className={classes.NavLinks}>{props.user.nickname} </p>
             </Nav.Link>
             : <>
