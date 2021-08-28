@@ -17,8 +17,11 @@ const AddTest = (props) => {
       login: "",
     },
     onSubmit: (values) => {
-      postData(values);
-      console.log("hi");
+      postData(values).then(res => {
+        if (res.data.err) {
+          console.log(res.data.err)
+        }
+      });
     },
   });
   return (

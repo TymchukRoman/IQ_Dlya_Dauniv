@@ -27,7 +27,7 @@ router.get('/getQuestions', async (req, res) => {
             author: result.author,
         })
     })).then(() => {
-        res.send({ data: [...qArray] })
+        res.send({ questions: [...qArray] })
         return
     })
 })

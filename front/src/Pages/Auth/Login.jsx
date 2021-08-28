@@ -11,11 +11,11 @@ const Login = (props) => {
     const login = async (data) => {
         let token
         await loginAPI(data).then((res) => {
-            if (res.data.token) {
+            if (res.data.err) {
+                setErrors([ ...res.data.err ])
+            } else {
                 token = res.data.token
                 setErrors("")
-            } else {
-                setErrors(res.data)
             }
         })
         localStorage.setItem('token', token);

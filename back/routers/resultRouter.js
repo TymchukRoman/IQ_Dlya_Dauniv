@@ -108,7 +108,7 @@ router.get('/getLeaderboards', async (req, res) => {
             points: item.totalScore
         })
     })).then(() => {
-        res.send(infoList)
+        res.send({top: infoList})
     })
 
 })
