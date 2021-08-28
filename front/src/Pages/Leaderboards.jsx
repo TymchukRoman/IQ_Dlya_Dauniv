@@ -14,7 +14,7 @@ const Leaderboards = () => {
 
   return <div>
     {leaderboards.map((item) => {
-      return <p>
+      return <p key={item.name}>
         {item.name} Score: {item.points}
       </p>
     })}

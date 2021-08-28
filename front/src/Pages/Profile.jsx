@@ -1,12 +1,18 @@
 import classes from "./styles/Profile.module.css"
+import { Button } from "react-bootstrap";
 
 const Profile = (props) => {
+
+    const logout = () => {
+        localStorage.setItem("token", "");
+        props.me()
+    }
 
     return <div>
         {props.user
             ? <div>
                 <div className={classes.headerDiv}>
-                    Nickname: {props.user.nickname}
+                    Nickname: {props.user.nickname}  <Button onClick={logout}>Logout</Button>
                 </div>
                 <div className={classes.inlineDivs}>
                     User type: {props.user.type}

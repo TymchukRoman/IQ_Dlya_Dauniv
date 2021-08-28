@@ -78,19 +78,23 @@ router.post('/getResult', (req, res) => {
 
 router.get('/getLeaderboards', async (req, res) => {
     let resultList
-    await Result.find({}, (err, found) => {
+
+    await User.find({}, (err, found) => {
         if (!found) {
             res.send({ err });
             return;
         } else {
-            resultList = [...found];
+            resultList = found.map(user => {
+                return { totalScore: user.totalScore, userId: user._id }
+            });
             return
         }
     })
+
     let infoList = []
     Promise.all(calcTop(resultList).map(async (item) => {
         let name
-        await User.findOne({ _id: item[0] }, (err, found) => {
+        await User.findOne({ _id: item.userId }, (err, found) => {
             if (!found) {
                 name = "Deleted user"
                 return;
@@ -101,7 +105,7 @@ router.get('/getLeaderboards', async (req, res) => {
         })
         infoList.push({
             name: name,
-            points: item[1]
+            points: item.totalScore
         })
     })).then(() => {
         res.send(infoList)
@@ -110,22 +114,12 @@ router.get('/getLeaderboards', async (req, res) => {
 })
 
 const calcTop = (list) => {
-    let unsorted = [];
-    list.forEach((item) => {
-        let added = false
-        for (i = 0; i < unsorted.length || added; i++) {
-            if (unsorted[i][0] == item.userId) {
-                unsorted[i][1] += item.points
-                added = true
-                break;
-            }
-        }
-        if (!added) {
-            unsorted.push([item.userId, item.points])
-        }
-    })
-    unsorted.sort((a, b) => b[1] - a[1]);
-    return [unsorted[0], unsorted[1], unsorted[2]]
+    let sorted = list.sort((a, b) => b.totalScore - a.totalScore);
+    let top = [];
+    for(let i = 0; i < 3; i++){
+        sorted[i] && top.push(sorted[i])
+    }
+    return top
 }
 
 module.exports = router

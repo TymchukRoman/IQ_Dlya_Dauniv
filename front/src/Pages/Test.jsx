@@ -145,7 +145,7 @@ const Test = () => {
               <img
                 alt=""
                 className={"d-block " + classes.caroImg}
-                src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
               ></img>
               <Carousel.Caption >
                 <Hints hints={hints} handleSelect={handleSelect} index={index} />
