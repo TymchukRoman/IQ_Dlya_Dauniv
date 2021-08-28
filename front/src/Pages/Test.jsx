@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { checkResult, getQuestions } from "../Axios/api";
 import { Carousel, Modal } from "react-bootstrap";
-import { Input, Button } from "reactstrap";
+import { Button } from "reactstrap";
 import classes from "./styles/Test.module.css";
 
 const Test = () => {
@@ -19,21 +19,25 @@ const Test = () => {
   };
 
   useEffect(() => {
-    getQuestions().then((response) => {
-      // console.log(response.data.data);
-      setQuestion(
-        response.data.data.map((item) => {
-          return {
-            qText: item.qText,
-            answerList: item.answerList,
-            _id: item._id,
-            author: item.author,
-            answer: "",
-          };
-        })
-      );
+    getQuestions().then((res) => {
+      // console.log(res.data.questions);
+      if (res.data.err) {
+        console.log(res.data.err)
+      } else {
+        setQuestion(
+          res.data.questions.map((item) => {
+            return {
+              qText: item.qText,
+              answerList: item.answerList,
+              _id: item._id,
+              author: item.author,
+              answer: "",
+            };
+          })
+        );
+      }
       let number = 0;
-      setHints(response.data.data.map((item) => {
+      setHints(res.data.questions.map((item) => {
         let exNumber = number;
         number++;
         return {
@@ -145,7 +149,7 @@ const Test = () => {
               <img
                 alt=""
                 className={"d-block " + classes.caroImg}
-                // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+              // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
               ></img>
               <Carousel.Caption >
                 <Hints hints={hints} handleSelect={handleSelect} index={index} />
@@ -187,11 +191,8 @@ const Test = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Enter your nickname</Modal.Title>
+          <Modal.Title>Ready to submit test?</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Input type="text"> </Input>
-        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close

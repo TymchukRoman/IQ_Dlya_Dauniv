@@ -8,7 +8,7 @@ const Leaderboards = () => {
 
   useEffect(() => {
     getLeaderboards().then((res) => {
-      setLeaderboards([...res.data])
+      setLeaderboards([...res.data.top])
     })
   }, [])
 

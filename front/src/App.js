@@ -21,7 +21,12 @@ export default function App() {
     let token = localStorage.getItem('token')
     if (token && token !== "undefined") {
       meAPI(token).then((res) => {
-        setUser({ ...res.data })
+        if (res.data.err) {
+          console.log(res.data.err)
+          localStorage.setItem("token", "")
+        } else {
+          setUser({ ...res.data })
+        }
       })
     } else {
       setUser(null)

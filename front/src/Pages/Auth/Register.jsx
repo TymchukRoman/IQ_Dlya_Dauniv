@@ -6,12 +6,14 @@ import { registerAPI } from "../../Axios/api"
 const Register = (props) => {
 
     const register = async (data) => {
-        let token
         await registerAPI(data).then((res) => {
-            token = res.data
+            if(res.data.err){
+                console.log(res.data.err)
+            } else if(res.data.token) {
+                localStorage.setItem('token', res.data.token);
+                props.me(res.data.token)
+            }
         })
-        localStorage.setItem('token', token);
-        props.me(token)
     }
 
     const formik = useFormik({

@@ -63,7 +63,7 @@ router.post('/register', async (req, res) => {
     );
     user.token = token;
     const savedUser = await user.save();
-    res.send(token);
+    res.send({token});
     return;
 })
 
