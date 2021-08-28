@@ -1,5 +1,6 @@
 import classes from "./styles/Profile.module.css"
 import { Button } from "react-bootstrap";
+import Preloader from "./Assets/Preloader";
 
 const Profile = (props) => {
 
@@ -27,7 +28,7 @@ const Profile = (props) => {
                     }
                 </div>
             </div>
-            : <div> Waiting for user data.... </div>
+            : <Preloader />
         }
     </div>
 

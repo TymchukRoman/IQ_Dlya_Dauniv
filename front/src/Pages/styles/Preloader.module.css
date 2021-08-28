@@ -1,0 +1,14 @@
+.preloader {
+    display: block;
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    width: 20%;
+}
+
+.preloaderimg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
