@@ -54,7 +54,7 @@ const RootRouter = (props) => {
           {(path === "/login" || path === "/register")
             ? <Component me={props.me} />
             : (path === "/profile") 
-              ? <Component user={props.user}/> 
+              ? <Component user={props.user} me={props.me}/> 
               : <Component />
           }
         </Route>
