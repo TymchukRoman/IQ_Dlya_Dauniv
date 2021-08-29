@@ -16,15 +16,15 @@ const Leaderboards = () => {
     {leaderboards.length
       ? <div>
         <div className={classes.first + " " + classes.topitem}>
-          <p><h4>{leaderboards[0].name}</h4></p>
+          <h4>{leaderboards[0].name}</h4>
           <p> Total score: {leaderboards[0].points}</p>
         </div>
         <div className={classes.second + " " + classes.topitem}>
-          <p><h4>{leaderboards[1].name}</h4></p>
+          <h4>{leaderboards[1].name}</h4>
           <p>Total score: {leaderboards[1].points}</p>
         </div>
         <div className={classes.third + " " + classes.topitem}>
-          <p><h4>{leaderboards[2].name}</h4></p>
+          <h4>{leaderboards[2].name}</h4>
           <p>Total score: {leaderboards[2].points}</p>
         </div>
       </div>
