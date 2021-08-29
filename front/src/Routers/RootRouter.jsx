@@ -6,7 +6,8 @@ import Home from "../Pages/MainPage";
 import Leaderboards from "../Pages/Leaderboards";
 import Test from "../Pages/Test";
 import Profile from "../Pages/Profile";
-import paths from "./paths";
+import { paths, adminPaths } from "./paths";
+import AdminPanel from "../Pages/Admin/AdminPanel";
 
 const Routers = [
   {
@@ -46,9 +47,23 @@ const Routers = [
   }
 ];
 
+const AdminRouters = [
+  {
+    path: adminPaths.adminPanel,
+    Component: AdminPanel,
+    exact: true,
+  }
+]
+
 const RootRouter = (props) => {
   return (
     <>
+      {(props.user && props.user.type === "admin") && AdminRouters.map(({path, Component, exact}) => {
+        return <Route key={path} exact={exact} path={path}>
+            <Component />
+        </Route>
+      })
+      }
       {Routers.map(({ path, Component, exact }) => (
         <Route key={path} exact={exact} path={path}>
           {(path === "/login" || path === "/register")
@@ -59,6 +74,7 @@ const RootRouter = (props) => {
           }
         </Route>
       ))}
+
     </>
   );
 };

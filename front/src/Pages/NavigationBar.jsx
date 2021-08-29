@@ -1,6 +1,6 @@
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import paths from "../Routers/paths";
+import {paths} from "../Routers/paths";
 import AuthLayout from "./Auth/AuthLayout";
 import classes from "./styles/Layouts.module.css"
 
