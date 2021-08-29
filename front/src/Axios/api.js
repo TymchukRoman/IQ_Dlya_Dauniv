@@ -1,21 +1,21 @@
-import axios from "axios";
+import axios from 'axios'
 
 const client = axios.create({
-  baseURL: "http://localhost:3000/",
-});
+  baseURL: 'http://localhost:3000/',
+})
 
 export const getQuestions = async () => {
-  return client.get("getQuestions");
-};
+  return client.get('getQuestions')
+}
 
 export const getLeaderboards = async () => {
-  return client.get("getLeaderboards");
-};
+  return client.get('getLeaderboards')
+}
 
 export const checkResult = async (data) => {
-  return client.post("checkResults", {
+  return client.post('checkResults', {
     token: data.token,
-    answers: data.answers
+    answers: data.answers,
   })
 }
 
@@ -25,33 +25,32 @@ export const postData = (data) => {
     data.answersList1,
     data.answersList2,
     data.answersList3,
-  ];
-  console.log(data);
-  return client.post("addQuestion", {
+  ]
+  console.log(data)
+  return client.post('addQuestion', {
     qText: data.qText,
     rigthAnswer: data.rigthAnswer,
     answerList: [...array],
-    login: data.login,
-    password: data.password,
-  });
-};
+    token: data.token,
+  })
+}
 
 export const loginAPI = (data) => {
-  return client.post("user/login", {
+  return client.post('user/login', {
     email: data.email,
-    password: data.password
+    password: data.password,
   })
 }
 
 export const registerAPI = (data) => {
-  return client.post("user/register", {
+  return client.post('user/register', {
     email: data.email,
     password: data.password,
     age: data.age,
-    nickname: data.nickname
+    nickname: data.nickname,
   })
 }
 
 export const meAPI = (token) => {
-  return client.post("user/me", { token })
+  return client.post('user/me', { token })
 }

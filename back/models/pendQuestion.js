@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const questionSchema = new mongoose.Schema(
+const pendQuestionSchema = new mongoose.Schema(
   {
     qText: {
       type: String,
@@ -22,16 +22,8 @@ const questionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    approvedBy: {
-      type: Object,
-      required: true,
-    },
-    approvedDate: {
-      type: String,
-      required: true,
-    },
   },
-  { collection: 'questions' },
+  { collection: 'pendQuestions' },
 )
 
-module.exports = mongoose.model('question', questionSchema)
+module.exports = mongoose.model('pendQuestion', pendQuestionSchema)
