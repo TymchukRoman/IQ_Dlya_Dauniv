@@ -4,6 +4,7 @@ import { checkResult, getQuestions } from "../Axios/api";
 import { Carousel, Modal } from "react-bootstrap";
 import { Button } from "reactstrap";
 import classes from "./styles/Test.module.css";
+import Preloader from "./Assets/Preloader";
 
 const Test = () => {
   //eslint-disable-next-line
@@ -142,52 +143,55 @@ const Test = () => {
 
   return (
     <div>
-      <Carousel activeIndex={index} onSelect={handleSelect} variant="dark" pause="hover" indicators={false} fade>
-        {question.map((q) => {
-          return (
-            <Carousel.Item key={q._id}>
-              <img
-                alt=""
-                className={"d-block " + classes.caroImg}
-              // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-              ></img>
-              <Carousel.Caption >
-                <Hints hints={hints} handleSelect={handleSelect} index={index} />
-                <div className={classes.case} >
-                  <h3>{q.qText}</h3>
-                  {q.answerList.map((item) => {
-                    return (
-                      <div key={item}>
-                        <div>
-                          {checkSelected(q._id, item) === true ? (
-                            <button
-                              className={classes.TestBtnActive}
-                              onClick={() => {
-                                setAnswer(q._id, item);
-                              }}
-                            >
-                              {item}
-                            </button>
-                          ) : (
-                            <button
-                              className={classes.TestBtn}
-                              onClick={() => {
-                                setAnswer(q._id, item);
-                              }}
-                            >
-                              {item}
-                            </button>
-                          )}
+      {question.length
+        ? <Carousel activeIndex={index} onSelect={handleSelect} variant="dark" pause="hover" indicators={false} fade>
+          {question.map((q) => {
+            return (
+              <Carousel.Item key={q._id}>
+                <img
+                  alt=""
+                  className={"d-block " + classes.caroImg}
+                // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                ></img>
+                <Carousel.Caption >
+                  <Hints hints={hints} handleSelect={handleSelect} index={index} />
+                  <div className={classes.case} >
+                    <h3>{q.qText}</h3>
+                    {q.answerList.map((item) => {
+                      return (
+                        <div key={item}>
+                          <div>
+                            {checkSelected(q._id, item) === true ? (
+                              <button
+                                className={classes.TestBtnActive}
+                                onClick={() => {
+                                  setAnswer(q._id, item);
+                                }}
+                              >
+                                {item}
+                              </button>
+                            ) : (
+                              <button
+                                className={classes.TestBtn}
+                                onClick={() => {
+                                  setAnswer(q._id, item);
+                                }}
+                              >
+                                {item}
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Carousel.Caption>
-            </Carousel.Item>
-          );
-        })}
-      </Carousel>
+                      );
+                    })}
+                  </div>
+                </Carousel.Caption>
+              </Carousel.Item>
+            );
+          })}
+        </Carousel>
+        : <Preloader />
+      }
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
