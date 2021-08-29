@@ -1,10 +1,13 @@
-const paths = {
+export const paths = {
     main: '/main',
     test: '/test',
     add: '/add',
     leaderboards: '/leaderboards',
     login: '/login',
     register: '/register',
-    profile: '/profile'
+    profile: '/profile',
 }
-export default paths;
+
+export const adminPaths = {
+    adminPanel: "/adminPanel"
+}
