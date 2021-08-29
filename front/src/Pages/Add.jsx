@@ -12,12 +12,10 @@ const AddTest = (props) => {
       answersList0: "",
       answersList1: "",
       answersList2: "",
-      answersList3: "",
-      password: "",
-      login: "",
+      answersList3: ""
     },
     onSubmit: (values) => {
-      postData(values).then(res => {
+      postData({...values, token: localStorage.getItem("token")}).then(res => {
         if (res.data.err) {
           console.log(res.data.err)
         }
@@ -95,33 +93,7 @@ const AddTest = (props) => {
           <br />
         </fieldset>
       </FormGroup>
-
-      <FormGroup>
-        <div className="form-group">
-          <label>login</label>
-          <input
-            name="login"
-            onChange={formik.handleChange}
-            value={formik.values.login}
-            type="login"
-            className="form-control"
-            placeholder="Enter login"
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            name="password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            type="password"
-            className="form-control"
-            placeholder="Enter password"
-          />
-        </div>
-      </FormGroup>
-      <Button>Submit</Button>
+      <Button type="submit">Submit</Button>
     </Form>
   );
 };

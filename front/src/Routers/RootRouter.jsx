@@ -44,7 +44,7 @@ const Routers = [
     path: paths.profile,
     Component: Profile,
     exact: true,
-  }
+  },
 ];
 
 const AdminRouters = [
@@ -52,29 +52,34 @@ const AdminRouters = [
     path: adminPaths.adminPanel,
     Component: AdminPanel,
     exact: true,
-  }
-]
+  },
+];
 
 const RootRouter = (props) => {
   return (
     <>
-      {(props.user && props.user.type === "admin") && AdminRouters.map(({path, Component, exact}) => {
-        return <Route key={path} exact={exact} path={path}>
-            <Component />
-        </Route>
-      })
-      }
+      {props.user &&
+        props.user.type === "admin" &&
+        AdminRouters.map(({ path, Component, exact }) => {
+          return (
+            <Route key={path} exact={exact} path={path}>
+              <Component />
+            </Route>
+          );
+        })}
       {Routers.map(({ path, Component, exact }) => (
         <Route key={path} exact={exact} path={path}>
-          {(path === "/login" || path === "/register")
-            ? <Component me={props.me} />
-            : (path === "/profile") 
-              ? <Component user={props.user} me={props.me}/> 
-              : <Component />
-          }
+          {path === "/login" || path === "/register" ? (
+            <Component me={props.me} />
+          ) : path === "/profile" ? (
+            <Component user={props.user} me={props.me} />
+          ) : path === "/add" ? (
+            <Component user={props.user} />
+          ) : (
+            <Component />
+          )}
         </Route>
       ))}
-
     </>
   );
 };
