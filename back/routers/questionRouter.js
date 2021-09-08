@@ -74,8 +74,8 @@ router.post('/addQuestion', addQuestion, async (req, res) => {
   )
 
   if (err.length > 0) {
-    res.send({ err })
-    return
+    res.send({ err }) 
+    return 
   }
 
   if (user.type === 'admin') {
@@ -107,6 +107,7 @@ router.post('/addQuestion', addQuestion, async (req, res) => {
 
 //admin route
 router.post("/approveQuestion", addQuestion, async (req, res) => {
+  console.log("approved")
   let user = await User.findOne({_id: req.user.user_id})
   let questionId = req.body.questionId; 
   if(user && user.type === "admin"){
@@ -141,7 +142,7 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
   if(user && user.type === "admin"){
     await PendQuestion.find({}, (err, found) => {
       if (!found) {
-        res.send({ err })
+        res.send({ pendQuestions: [], msg: "No pend questions" })
         return
       } else {
         res.send({pendQuestions: [...found]})

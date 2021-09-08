@@ -54,3 +54,11 @@ export const registerAPI = (data) => {
 export const meAPI = (token) => {
   return client.post('user/me', { token })
 }
+
+export const approve = (token, questionId) => {
+  return client.post('approveQuestion', { questionId, token })
+}
+
+export const getPendQuestions = (token) => {
+  return client.post('getPendQuestions', { token })
+}

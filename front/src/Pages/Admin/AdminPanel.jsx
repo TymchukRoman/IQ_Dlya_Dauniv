@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, ButtonGroup, Col, Row } from "react-bootstrap";
+import { getPendQuestions, approve } from "../../Axios/api";
 import classes from "../styles/AdminPanel.module.css";
+import Preloader from "../Assets/Preloader"
 
 const AdminPanel = () => {
   const [panelSettings, setPanelSettings] = useState({ option: "approve" });
@@ -8,7 +10,7 @@ const AdminPanel = () => {
   const switcher = () => {
     switch (panelSettings.option) {
       case "approve":
-        return <p> Approving</p>;
+        return <ApproveQuestions />;
 
       case "setAdmin":
         return <p> Adding admin</p>;
@@ -22,7 +24,7 @@ const AdminPanel = () => {
   };
 
   const setOption = (newOption) => {
-    setPanelSettings({...panelSettings, option: newOption})
+    setPanelSettings({ ...panelSettings, option: newOption })
   }
 
   return (
@@ -30,10 +32,10 @@ const AdminPanel = () => {
       <Row>
         <Col xs={2}>
           <ButtonGroup vertical className="d-grid gap-2">
-            <Button variant="outline-dark" onClick={() => {setOption("approve")}}>Approve question</Button>
-            <Button variant="outline-dark" onClick={() => {setOption("setAdmin")}}>Add administrator</Button>
-            <Button variant="outline-dark" onClick={() => {setOption("update")}}>Update question</Button>
-            <Button variant="outline-dark" onClick={() => {setOption("nqweq")}}>Another</Button>
+            <Button variant="outline-dark" onClick={() => { setOption("approve") }}>Approve question</Button>
+            <Button variant="outline-dark" onClick={() => { setOption("setAdmin") }}>Add administrator</Button>
+            <Button variant="outline-dark" onClick={() => { setOption("update") }}>Update question</Button>
+            <Button variant="outline-dark" onClick={() => { setOption("nqweq") }}>Another</Button>
           </ButtonGroup>
         </Col>
         <Col>{switcher()}</Col>
@@ -41,5 +43,35 @@ const AdminPanel = () => {
     </div>
   );
 };
+
+const ApproveQuestions = () => {
+  const [questions, setQuestions] = useState([{ pendQuestions: [], isLoaded: false }]);
+
+  useEffect(() => {
+    let token = localStorage.getItem('token')
+    token && getPendQuestions(token).then(response => {
+      setQuestions({ pendQuestions: response.data.pendQuestions, isLoaded: true })
+    })
+  }, [])
+
+  const approveQuestion = (id) => {
+    let token = localStorage.getItem('token')
+    approve(token, id)
+  }
+
+  return <div>
+    {questions.isLoaded
+      ? questions.pendQuestions.length === 0
+      ? <div> No questions waiting for approval</div>
+      : questions.pendQuestions.map(question => {
+        return <div key={question._id} >
+          <p>{JSON.stringify(question)}</p>
+          <Button onClick={() => {approveQuestion(question._id)}}>Approve</Button>
+        </div>
+      })
+      : <Preloader />
+    }
+  </div>
+}
 
 export default AdminPanel;
