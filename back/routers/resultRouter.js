@@ -5,38 +5,43 @@ const Question = require('../models/question');
 const User = require('../models/user');
 const auth = require("../middleware/auth");
 const answerValidation = require('../validators/answerValidation');
+const logger = require('../utils/logger');
 
 router.post('/checkResults', auth, async (req, res) => {
-    let err = answerValidation(req.body.answers);
-    if (err.length > 0) {
-        res.send({ err })
-        return
-    }
-    let points = 0;
-    Promise.all(req.body.answers.map(async (answer) => {
-        await Question.findOne({ _id: answer.id }, (err, found) => {
-            if (!found) {
-                console.log({ err });
-            } else {
-                if (found.rigthAnswer === answer.answer) {
-                    points++;
+    try {
+        let err = answerValidation(req.body.answers);
+        if (err.length > 0) {
+            res.send({ err })
+            return
+        }
+        let points = 0;
+        Promise.all(req.body.answers.map(async (answer) => {
+            await Question.findOne({ _id: answer.id }, (err, found) => {
+                if (!found) {
+                    console.log({ err });
+                } else {
+                    if (found.rigthAnswer === answer.answer) {
+                        points++;
+                        return 1;
+                    }
                     return 1;
                 }
-                return 1;
-            }
+            })
+        })).then(async () => {
+            const testResult = new Result({
+                userId: req.user.user_id,
+                questions: [...req.body.answers],
+                points: points,
+                date: new Date(Date.now()).toISOString(),
+            });
+            writeUserResult(testResult.points, testResult._id, req.user.user_id)
+            const savedR = await testResult.save();
+            res.send(savedR._id);
+            return
         })
-    })).then(async () => {
-        const testResult = new Result({
-            userId: req.user.user_id,
-            questions: [...req.body.answers],
-            points: points,
-            date: new Date(Date.now()).toISOString(),
-        });
-        writeUserResult(testResult.points, testResult._id, req.user.user_id)
-        const savedR = await testResult.save();
-        res.send(savedR._id);
-        return
-    })
+    } catch (err) {
+        logger("Error", "Check result error", "/checkResults", { answers: req.body.answers, user: req.user._id, err });
+    }
 })
 
 const writeUserResult = async (points, resultId, user_id) => {
@@ -48,75 +53,84 @@ const writeUserResult = async (points, resultId, user_id) => {
 }
 
 router.get('/getResults', (req, res) => {
-    Result.find({}, (err, found) => {
-        if (!found) {
-            res.send({ err });
-            return;
-        } else {
-            res.send(found);
-            return
-        }
-    })
-})
-
-router.post('/getResult', (req, res) => {
-    Result.findOne({ _id: req.body.id }, (err, found) => {
-        if (!found) {
-            res.send({ err });
-            return;
-        } else {
-            res.send({
-                userId: found.userId,
-                questions: [...found.questions],
-                points: found.points,
-                date: found.date
-            });
-            return
-        }
-    })
-})
-
-router.get('/getLeaderboards', async (req, res) => {
-    let resultList
-
-    await User.find({}, (err, found) => {
-        if (!found) {
-            res.send({ err });
-            return;
-        } else {
-            resultList = found.map(user => {
-                return { totalScore: user.totalScore, userId: user._id }
-            });
-            return
-        }
-    })
-
-    let infoList = []
-    Promise.all(calcTop(resultList).map(async (item) => {
-        let name
-        await User.findOne({ _id: item.userId }, (err, found) => {
+    try {
+        Result.find({}, (err, found) => {
             if (!found) {
-                name = "Deleted user"
+                res.send({ err });
                 return;
             } else {
-                name = found.nickname
+                res.send(found);
                 return
             }
         })
-        infoList.push({
-            name: name,
-            points: item.totalScore
-        })
-    })).then(() => {
-        res.send({top: infoList})
-    })
+    } catch (err) {
+        logger("Error", "Get results error", "/getResults", { err });
+    }
+})
 
+router.post('/getResult', (req, res) => {
+    try {
+        Result.findOne({ _id: req.body.id }, (err, found) => {
+            if (!found) {
+                res.send({ err });
+                return;
+            } else {
+                res.send({
+                    userId: found.userId,
+                    questions: [...found.questions],
+                    points: found.points,
+                    date: found.date
+                });
+                return
+            }
+        })
+    } catch (err) {
+        logger("Error", "Get result error", "/getResult", { err, id: req.body.id });
+    }
+})
+
+router.get('/getLeaderboards', async (req, res) => {
+    try {
+        let resultList
+        await User.find({}, (err, found) => {
+            if (!found) {
+                res.send({ err });
+                return;
+            } else {
+                resultList = found.map(user => {
+                    return { totalScore: user.totalScore, userId: user._id }
+                });
+                return
+            }
+        })
+        let infoList = []
+        Promise.all(calcTop(resultList).map(async (item) => {
+            let name
+            await User.findOne({ _id: item.userId }, (err, found) => {
+                if (!found) {
+                    name = "Deleted user"
+                    return;
+                } else {
+                    name = found.nickname
+                    return
+                }
+            })
+            infoList.push({
+                name: name,
+                points: item.totalScore
+            })
+        })).then(() => {
+            res.send({ top: infoList })
+        })
+    } catch (err) {
+        logger("Error", "Get leaderboards error", "/getLeaderboards", { err });
+    }
 })
 
 const calcTop = (list) => {
     let sorted = list.sort((a, b) => b.totalScore - a.totalScore);
     let top = [];
-    for(let i = 0; i < 3; i++){
+    for (let i = 0; i < 3; i++) {
         sorted[i] && top.push(sorted[i])
     }
     return top
