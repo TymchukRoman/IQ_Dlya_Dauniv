@@ -103,8 +103,53 @@ router.post('/addQuestion', addQuestion, async (req, res) => {
     res.send(savedQ)
     return
   }
-  res.send({ err: 'Cant add question' })
-  return
+})
+
+//admin route
+router.post("/approveQuestion", addQuestion, async (req, res) => {
+  let user = await User.findOne({_id: req.user.user_id})
+  let questionId = req.body.questionId; 
+  if(user && user.type === "admin"){
+    let forPend = await PendQuestion.findOne({_id: questionId})
+    if (!forPend) {
+      res.send({err: "Seems like this question is not awailable"})
+      return
+    }
+    let question = new Question({
+      qText: forPend.qText,
+      rigthAnswer: forPend.rigthAnswer,
+      answerList: forPend.answerList,
+      author: forPend.author,
+      date: forPend.date,
+      approvedBy: { nickname: user.nickname, id: user._id },
+      approvedDate: new Date(Date.now()).toISOString(),
+    }) 
+
+    const savedQ = await question.save()
+    await PendQuestion.deleteOne({_id: questionId})
+    res.send(savedQ)
+    return
+  } else {
+    res.send({ err: "You must be an administrator to aprove questions"})
+  }
+})
+
+//admin route
+router.post("/getPendQuestions", addQuestion, async (req, res) => {
+  let user = await User.findOne({_id: req.user.user_id})
+
+  if(user && user.type === "admin"){
+    await PendQuestion.find({}, (err, found) => {
+      if (!found) {
+        res.send({ err })
+        return
+      } else {
+        res.send({pendQuestions: [...found]})
+      }
+    })
+  } else {
+    res.send({ err: "You must be an administrator to see pending questions"})
+  }
 })
 
 module.exports = router
