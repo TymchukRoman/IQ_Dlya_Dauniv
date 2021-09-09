@@ -62,3 +62,7 @@ export const approve = (token, questionId) => {
 export const getPendQuestions = (token) => {
   return client.post('getPendQuestions', { token })
 }
+
+export const getResult = (resultId) => {
+  return client.post('getResult', {resultId})
+}

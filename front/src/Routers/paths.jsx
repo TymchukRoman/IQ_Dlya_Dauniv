@@ -6,6 +6,7 @@ export const paths = {
     login: '/login',
     register: '/register',
     profile: '/profile',
+    result: '/result'
 }
 
 export const adminPaths = {

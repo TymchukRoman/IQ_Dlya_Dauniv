@@ -5,6 +5,7 @@ import Register from "../Pages/Auth/Register";
 import Home from "../Pages/MainPage";
 import Leaderboards from "../Pages/Leaderboards";
 import Test from "../Pages/Test";
+import Result from "../Pages/Result";
 import Profile from "../Pages/Profile";
 import { paths, adminPaths } from "./paths";
 import AdminPanel from "../Pages/Admin/AdminPanel";
@@ -44,6 +45,11 @@ const Routers = [
     path: paths.profile,
     Component: Profile,
     exact: true,
+  },
+  {
+    path: paths.result,
+    Component: Result,
+    exact: false,
   },
 ];
 
