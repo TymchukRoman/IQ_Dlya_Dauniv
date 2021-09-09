@@ -36,7 +36,7 @@ router.post('/checkResults', auth, async (req, res) => {
             });
             writeUserResult(testResult.points, testResult._id, req.user.user_id)
             const savedR = await testResult.save();
-            res.send(savedR._id);
+            res.send({resultId: savedR._id});
             return
         })
     } catch (err) {
@@ -70,7 +70,7 @@ router.get('/getResults', (req, res) => {
 
 router.post('/getResult', (req, res) => {
     try {
-        Result.findOne({ _id: req.body.id }, (err, found) => {
+        Result.findOne({ _id: req.body.resultId }, (err, found) => {
             if (!found) {
                 res.send({ err });
                 return;
@@ -85,7 +85,7 @@ router.post('/getResult', (req, res) => {
             }
         })
     } catch (err) {
-        logger("Error", "Get result error", "/getResult", { err, id: req.body.id });
+        logger("Error", "Get result error", "/getResult", { err, id: req.body.resultId });
     }
 })
 

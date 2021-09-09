@@ -5,6 +5,7 @@ import { Carousel, Modal } from "react-bootstrap";
 import { Button } from "reactstrap";
 import classes from "./styles/Test.module.css";
 import Preloader from "./Assets/Preloader";
+import { Redirect } from "react-router-dom";
 
 const Test = () => {
   //eslint-disable-next-line
@@ -13,6 +14,7 @@ const Test = () => {
   const [show, setShow] = useState(false);
   const [hints, setHints] = useState([])
   const [index, setIndex] = useState(0);
+  const [submited, setSubmited] = useState(false)
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -67,6 +69,9 @@ const Test = () => {
     checkResult({
       token,
       answers: [...answers]
+    }).then((res) => {
+      console.log(res.data.resultId)
+      setSubmited(res.data.resultId)
     })
   }
 
@@ -95,10 +100,6 @@ const Test = () => {
   };
 
   const setActive = (qId) => {
-    console.log(hints)
-    console.log("-")
-    console.log(qId)
-    console.log("-")
     setHints(hints.map((item) => {
       if (item.qId === qId) {
         return {
@@ -143,95 +144,96 @@ const Test = () => {
 
   return (
     <div>
-      {question.length
-        ? <Carousel activeIndex={index} onSelect={handleSelect} variant="dark" pause="hover" indicators={false} fade>
-          {question.map((q) => {
-            return (
-              <Carousel.Item key={q._id}>
-                <img
-                  alt=""
-                  className={"d-block " + classes.caroImg}
-                // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
-                ></img>
-                <Carousel.Caption >
-                  <Hints hints={hints} handleSelect={handleSelect} index={index} />
-                  <div className={classes.case} >
-                    <h3>{q.qText}</h3>
-                    {q.answerList.map((item) => {
-                      return (
-                        <div key={item}>
-                          <div>
-                            {checkSelected(q._id, item) === true ? (
-                              <button
-                                className={classes.TestBtnActive}
-                                onClick={() => {
-                                  setAnswer(q._id, item);
-                                }}
-                              >
-                                {item}
-                              </button>
-                            ) : (
-                              <button
-                                className={classes.TestBtn}
-                                onClick={() => {
-                                  setAnswer(q._id, item);
-                                }}
-                              >
-                                {item}
-                              </button>
-                            )}
+      {submited && <Redirect to={`/result/${submited}`} />}
+        {question.length
+          ? <Carousel activeIndex={index} onSelect={handleSelect} variant="dark" pause="hover" indicators={false} fade>
+            {question.map((q) => {
+              return (
+                <Carousel.Item key={q._id}>
+                  <img
+                    alt=""
+                    className={"d-block " + classes.caroImg}
+                  // src="https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg"
+                  ></img>
+                  <Carousel.Caption >
+                    <Hints hints={hints} handleSelect={handleSelect} index={index} />
+                    <div className={classes.case} >
+                      <h3>{q.qText}</h3>
+                      {q.answerList.map((item) => {
+                        return (
+                          <div key={item}>
+                            <div>
+                              {checkSelected(q._id, item) === true ? (
+                                <button
+                                  className={classes.TestBtnActive}
+                                  onClick={() => {
+                                    setAnswer(q._id, item);
+                                  }}
+                                >
+                                  {item}
+                                </button>
+                              ) : (
+                                <button
+                                  className={classes.TestBtn}
+                                  onClick={() => {
+                                    setAnswer(q._id, item);
+                                  }}
+                                >
+                                  {item}
+                                </button>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Carousel.Caption>
-              </Carousel.Item>
-            );
-          })}
-        </Carousel>
-        : <Preloader />
-      }
+                        );
+                      })}
+                    </div>
+                  </Carousel.Caption>
+                </Carousel.Item>
+              );
+            })}
+          </Carousel>
+          : <Preloader />
+        }
 
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Ready to submit test?</Modal.Title>
-        </Modal.Header>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={() => { handleClose(); submitResults() }}>
-            Submit
-          </Button>
-        </Modal.Footer>
-      </Modal>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Ready to submit test?</Modal.Title>
+          </Modal.Header>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => { handleClose(); submitResults() }}>
+              Submit
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
-    </div>
+      </div>
   );
 };
 
 const Hints = (props) => {
   return <div>
-    {props.hints.map((item) => {
-      if (item.number === props.index) {
-        return <div
-          className={classes.hint}
-          key={item.qId}
-          onClick={() => { props.handleSelect(item.number) }}
-          style={{ color: item.status, fontWeight: "bold" }}>
-          {"  " + (item.number + 1) + "  "}
-        </div>
-      }
-      return <div
-        className={classes.hint}
-        key={item.qId}
-        onClick={() => { props.handleSelect(item.number) }}
-        style={{ color: item.status }}>
-        {"  " + (item.number + 1) + "  "}
+        {props.hints.map((item) => {
+          if (item.number === props.index) {
+            return <div
+              className={classes.hint}
+              key={item.qId}
+              onClick={() => { props.handleSelect(item.number) }}
+              style={{ color: item.status, fontWeight: "bold" }}>
+              {"  " + (item.number + 1) + "  "}
+            </div>
+          }
+          return <div
+            className={classes.hint}
+            key={item.qId}
+            onClick={() => { props.handleSelect(item.number) }}
+            style={{ color: item.status }}>
+            {"  " + (item.number + 1) + "  "}
+          </div>
+        })}
       </div>
-    })}
-  </div>
 }
 
-export default Test;
+      export default Test;
