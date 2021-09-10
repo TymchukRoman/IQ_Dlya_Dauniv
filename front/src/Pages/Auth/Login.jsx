@@ -3,10 +3,12 @@ import { Button, Form, Input } from "reactstrap";
 import classes from "./Auth.module.css"
 import { loginAPI } from "../../Axios/api"
 import { useState } from "react";
+import { Redirect } from "react-router-dom";
 
 const Login = (props) => {
 
-    const [errors, setErrors] = useState("")
+    const [errors, setErrors] = useState("");
+    const [submited, setSubmited] = useState(false);
 
     const login = async (data) => {
         let token
@@ -31,11 +33,14 @@ const Login = (props) => {
             login({
                 email: values.email,
                 password: values.password
+            }).then(() => {
+                setSubmited(true)
             })
         },
     });
 
     return <Form onSubmit={formik.handleSubmit} className={classes.loginForm}>
+        {submited && <Redirect to="main" />}
         <Input
             name="email"
             onChange={formik.handleChange}
