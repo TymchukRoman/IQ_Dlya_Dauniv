@@ -1,10 +1,15 @@
 import React from "react";
+import { useState } from "react";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { useFormik } from "formik";
 import { postData } from "../Axios/api";
 import classes from "./styles/Add.module.css"
+import { Redirect } from "react-router-dom";
 
 const AddTest = (props) => {
+
+  const [submited, setSubmited] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       qText: "",
@@ -15,15 +20,18 @@ const AddTest = (props) => {
       answersList3: ""
     },
     onSubmit: (values) => {
-      postData({...values, token: localStorage.getItem("token")}).then(res => {
+      postData({ ...values, token: localStorage.getItem("token") }).then(res => {
         if (res.data.err) {
           console.log(res.data.err)
         }
+      }).then(() => {
+        setSubmited(true)
       });
     },
   });
   return (
     <Form onSubmit={formik.handleSubmit} className={classes.addForm}>
+      {submited && <Redirect to="main" />}
       <fieldset >
         <FormGroup>
           <Label for="name">Name of qText</Label>

@@ -14,7 +14,7 @@ const Test = () => {
   const [show, setShow] = useState(false);
   const [hints, setHints] = useState([])
   const [index, setIndex] = useState(0);
-  const [submited, setSubmited] = useState(false)
+  const [submited, setSubmited] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {

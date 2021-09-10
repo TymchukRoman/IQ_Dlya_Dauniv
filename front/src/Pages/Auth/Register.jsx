@@ -1,15 +1,19 @@
+import { useState } from "react";
 import { useFormik } from "formik";
 import { Button, Form, Input } from "reactstrap";
 import classes from "./Auth.module.css"
 import { registerAPI } from "../../Axios/api"
+import { Redirect } from "react-router-dom";
 
 const Register = (props) => {
 
+    const [submited, setSubmited] = useState(false);
+
     const register = async (data) => {
         await registerAPI(data).then((res) => {
-            if(res.data.err){
+            if (res.data.err) {
                 console.log(res.data.err)
-            } else if(res.data.token) {
+            } else if (res.data.token) {
                 localStorage.setItem('token', res.data.token);
                 props.me(res.data.token)
             }
@@ -29,11 +33,14 @@ const Register = (props) => {
                 password: values.password,
                 age: values.age,
                 nickname: values.nickname
+            }).then(() => {
+                setSubmited(true)
             })
         },
     });
 
     return <Form onSubmit={formik.handleSubmit} className={classes.loginForm}>
+        {submited && <Redirect to="main" />}
         <Input
             name="nickname"
             onChange={formik.handleChange}
