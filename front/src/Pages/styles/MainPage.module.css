@@ -1,0 +1,20 @@
+.container {
+    margin: 50px;
+    display: grid; 
+    grid-template-columns: 1.3fr 7.9fr 5.9fr; 
+    grid-template-rows: 1.7fr 7.1fr 3.3fr; 
+    gap: 0px 0px; 
+    grid-template-areas: 
+      "HeadLine HeadLine HeadLine"
+      "FastNavigation NewsContainer Chat"
+      "FastNavigation NewsContainer Notification"; 
+  }
+  .FastNavigation { grid-area: FastNavigation; }
+  .HeadLine { grid-area: HeadLine; }
+  .Chat { grid-area: Chat; }
+  .NewsContainer { grid-area: NewsContainer; }
+  .Notification { grid-area: Notification; }
+
+  .gridElement {
+      padding: 5px;
+  }
