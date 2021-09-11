@@ -1,14 +1,42 @@
-.inlineDivs {
-    display: inline-block;
-    margin-left: 50px;
-    padding-top: 25px;
+.container {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 0.7fr 9.3fr 5.1fr;
+    grid-template-rows: 0.8fr 9.7fr 1.6fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas: ". . ." ". UserData Results" ". . .";
 }
 
-.headerDiv {
-    margin-left: 50px;
-    margin-top: 25px;
+.UserData {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas: "UserIcon UserNicknameStatus UserNicknameStatus" "UserPersonalData UserPersonalData UserPersonalData" "UserPersonalData UserPersonalData UserPersonalData";
+    grid-area: UserData;
 }
 
-.resultDiv {
-    display: inline-block;
+.UserIcon {
+    grid-area: UserIcon;
+}
+
+.UserNicknameStatus {
+    grid-area: UserNicknameStatus;
+}
+
+.UserPersonalData {
+    grid-area: UserPersonalData;
+}
+
+.Results {
+    grid-area: Results;
+}
+
+.usericon {
+    width: 50%;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-bottom: 25%;
 }

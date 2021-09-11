@@ -98,26 +98,17 @@ router.get('/getLeaderboards', async (req, res) => {
                 return;
             } else {
                 resultList = found.map(user => {
-                    return { totalScore: user.totalScore, userId: user._id }
+                    return { totalScore: user.totalScore, userId: user._id, nickname: user.nickname }
                 });
                 return
             }
         })
         let infoList = []
         Promise.all(calcTop(resultList).map(async (item) => {
-            let name
-            await User.findOne({ _id: item.userId }, (err, found) => {
-                if (!found) {
-                    name = "Deleted user"
-                    return;
-                } else {
-                    name = found.nickname
-                    return
-                }
-            })
             infoList.push({
-                name: name,
-                points: item.totalScore
+                name: item.nickname,
+                points: item.totalScore,
+                userId: item.userId
             })
         })).then(() => {
             res.send({ top: infoList })
