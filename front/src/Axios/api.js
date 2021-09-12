@@ -64,5 +64,9 @@ export const getPendQuestions = (token) => {
 }
 
 export const getResult = (resultId) => {
-  return client.post('getResult', {resultId})
+  return client.post('getResult', { resultId })
+}
+
+export const getLogs = (token) => {
+  return client.post('getLogs', { token })
 }

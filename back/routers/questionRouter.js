@@ -192,21 +192,6 @@ router.post("/findQuestions", admin, async (req, res) => {
 })
 
 //admin route
-router.post("/findQuestions", admin, async (req, res) => {
-	try {
-		await Question.findOne({ _id: req.body.id }, (err, found) => {
-			if (!found || err) {
-				return res.send({ err, msg: "No found questions" })
-			} else {
-				return res.send({ found })
-			}
-		})
-	} catch (err) {
-		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
-	}
-})
-
-//admin route
 router.post("/getAllQuestions", admin, async (req, res) => {
 	try {
 		await Question.find({}, (err, found) => {

@@ -6,7 +6,7 @@ const logger = require('../utils/logger');
 
 router.post('/getLogs', admin, async (req, res) => {
     try {
-        await Log.find({}, (found, err) => {
+        await Log.find({}, (err, found) => {
             if (!found) {
                 res.send({ err });
                 return;
@@ -23,7 +23,7 @@ router.post('/getLogs', admin, async (req, res) => {
 
 router.post('/searchLogs', admin, async (req, res) => {
     try {
-        await Log.find({ key: req.body.key }, (found, err) => {
+        await Log.find({ key: req.body.key }, (err, found) => {
             if (!found) {
                 res.send({ err });
                 return;
