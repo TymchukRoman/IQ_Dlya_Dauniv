@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const userRouter = require('./routers/userRouter');
 const resultRouter = require('./routers/resultRouter');
 const questionRouter = require('./routers/questionRouter');
+const logsRouter = require('./routers/logsRouter');
 
 dotenv.config();
 const config = process.env;
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 
 app.use('/', resultRouter)
 app.use('/', questionRouter)
+app.use('/', logsRouter)
 app.use('/user', userRouter)
 
 app.listen(config.PORT, () => console.log(`Listening on port ${config.PORT}`));

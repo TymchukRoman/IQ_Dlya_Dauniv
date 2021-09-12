@@ -6,6 +6,7 @@ const User = require('../models/user')
 const questionValidation = require('../validators/questionValidation')
 const addQuestion = require('../middleware/addQuestion')
 const logger = require('../utils/logger');
+const admin = require("../middleware/admin");
 
 router.get('/getQuestions', async (req, res) => {
 	try {
@@ -160,10 +161,9 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
 		if (user && user.type === "admin") {
 			await PendQuestion.find({}, (err, found) => {
 				if (!found) {
-					res.send({ pendQuestions: [], msg: "No pend questions" })
-					return
+					return res.send({ pendQuestions: [], msg: "No pend questions" });
 				} else {
-					res.send({ pendQuestions: [...found] })
+					return res.send({ pendQuestions: [...found] });
 				}
 			})
 		} else {
@@ -173,6 +173,80 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
 		}
 	} catch (err) {
 		logger("Error", "Approve questions error", "/approveQuestion", { err, user });
+	}
+})
+
+//admin route
+router.post("/findQuestions", admin, async (req, res) => {
+	try {
+		await Question.findOne({ _id: req.body.id }, (err, found) => {
+			if (!found || err) {
+				return res.send({ err, msg: "No found questions" })
+			} else {
+				return res.send({ found })
+			}
+		})
+	} catch (err) {
+		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
+	}
+})
+
+//admin route
+router.post("/findQuestions", admin, async (req, res) => {
+	try {
+		await Question.findOne({ _id: req.body.id }, (err, found) => {
+			if (!found || err) {
+				return res.send({ err, msg: "No found questions" })
+			} else {
+				return res.send({ found })
+			}
+		})
+	} catch (err) {
+		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
+	}
+})
+
+//admin route
+router.post("/getAllQuestions", admin, async (req, res) => {
+	try {
+		await Question.find({}, (err, found) => {
+			if (!found || err) {
+				return res.send({ err, msg: "No found questions" })
+			} else {
+				return res.send({ found })
+			}
+		})
+	} catch (err) {
+		logger("Error", "Cannot get all questions", "/getAllQuestions", { err, user: req.user });
+	}
+})
+
+//admin route
+router.post("/updateQuestion", admin, async (req, res) => {
+	try {
+		await Question.findOneAndUpdate({ _id: req.body.id },
+			{ ...req.body.newdata }, { new: true }, (err, doc) => {
+				if (err) {
+					return res.send({ err })
+				}
+				return res.send({ doc })
+			})
+	} catch (err) {
+		logger("Error", "Cannot update question", "/updateQuestion", { err, user: req.user, id: req.body.id, new: req.body.newData });
+	}
+})
+
+//admin route
+router.post("/deleteQuestion", admin, async (req, res) => {
+	try {
+		await Question.deleteOne({ _id: req.body.id }, {}, (err) => {
+			if (err) {
+				return res.send({ err })
+			}
+			return res.send({ msg: "Question deleted" })
+		})
+	} catch (err) {
+		logger("Error", "Cannot delete question", "/deleteQuestion", { err, user: req.user, id: req.body.id });
 	}
 })
 

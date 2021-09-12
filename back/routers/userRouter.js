@@ -7,6 +7,7 @@ const User = require('../models/user');
 const loginValidation = require('../validators/loginValidation');
 const registerValidation = require("../validators/registerValidation");
 const logger = require('../utils/logger');
+const admin = require("../middleware/admin");
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -19,7 +20,7 @@ router.post('/login', async (req, res) => {
         const user = await User.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
-                { user_id: user._id, email },
+                { user_id: user._id, email, role: user.type },
                 process.env.TOKEN_SECRET,
                 { expiresIn: "2h", }
             );
@@ -63,7 +64,7 @@ router.post('/register', async (req, res) => {
             totalScore: 0
         });
         const token = jwt.sign(
-            { user_id: user._id, email },
+            { user_id: user._id, email, role: user.type },
             process.env.TOKEN_SECRET,
             { expiresIn: "24h" }
         );
@@ -90,6 +91,36 @@ router.post("/me", auth, async (req, res) => {
         return
     } catch (err) {
         logger("Error", "Authentication error", "/me", { userId: req.user.user_id, err });
+    }
+})
+
+router.post("/findUser", admin, async (req, res) => {
+    try {
+        await User.findOne({ _id: req.body.id }, (found, err) => {
+            if (!found) {
+                res.send({ err });
+                return;
+            } else {
+                res.send({ found });
+                return
+            }
+        })
+    } catch (err) {
+        logger("Error", "Cannot find user", "/findUser", { user: req.user, err, userId: req.body.id });
+    }
+})
+
+router.post("/promoteUser", admin, async (req, res) => {
+    try {
+        await User.findOneAndUpdate({ _id: req.body.id }, { type: "admin" }, {}, (err, doc) => {
+            if (err) {
+                return res.send({ err })
+            }
+            logger("Info", "User promoted", "/promoteUser", { promotor: req.user, promoted: req.body.id });
+            return res.send({ msg: "User propoted" })
+        })
+    } catch (err) {
+        logger("Error", "AUser promotion error", "/promoteUser", { user: req.user, err, userId: req.body.id });
     }
 })
 
