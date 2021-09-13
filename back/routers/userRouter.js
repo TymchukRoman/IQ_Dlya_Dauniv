@@ -96,7 +96,7 @@ router.post("/me", auth, async (req, res) => {
 
 router.post("/findUser", admin, async (req, res) => {
     try {
-        await User.findOne({ _id: req.body.id }, (found, err) => {
+        await User.findOne({ email: req.body.email }, (err, found) => {
             if (!found) {
                 res.send({ err });
                 return;
