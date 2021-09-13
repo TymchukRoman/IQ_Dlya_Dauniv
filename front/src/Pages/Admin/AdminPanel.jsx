@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Button, ButtonGroup, Col, Row, Accordion, Badge } from "react-bootstrap";
-import { getPendQuestions, approve, getLogs } from "../../Axios/api";
+import { Button, ButtonGroup, Col, Row, Accordion, Badge, Form, Table } from "react-bootstrap";
+import { getPendQuestions, approve, getLogs, findUser, promoteUser } from "../../Axios/api";
 import classes from "../styles/AdminPanel.module.css";
-import Preloader from "../Assets/Preloader"
+import Preloader from "../Assets/Preloader";
+import { useFormik } from "formik";
 
 const AdminPanel = () => {
   const [panelSettings, setPanelSettings] = useState({ option: "approve" });
@@ -13,7 +14,7 @@ const AdminPanel = () => {
         return <ApproveQuestions />;
 
       case "setAdmin":
-        return <p> Adding admin</p>;
+        return <UserPanel />;
 
       case "update":
         return <p> Updating questions</p>;
@@ -42,7 +43,7 @@ const AdminPanel = () => {
             <Button variant="outline-dark" onClick={() => { setOption("nqweq") }}>Another</Button>
           </ButtonGroup>
         </Col>
-        <Col>{switcher()}</Col>
+        <Col xs={10}>{switcher()}</Col>
       </Row>
     </div>
   );
@@ -110,11 +111,8 @@ const Logs = () => {
   return <div>
     {logs
       ? <div>
-          <Button className={classes.clearLogs}> Clear logs </Button>
+        <Button className={classes.clearLogs}> Clear logs </Button>
         {logs.map((log) => {
-
-
-
           return <Accordion key={log._id}>
             <Accordion.Item eventKey="0">
               <Accordion.Header>{body(log.key)} {"  "} {log.msg}</Accordion.Header>
@@ -131,5 +129,89 @@ const Logs = () => {
       : <Preloader />}
   </div>
 }
+
+
+const UserPanel = () => {
+  const [userData, setUserData] = useState(null);
+  const [loader, setLoader] = useState(false);
+
+  const getUserData = (email) => {
+    setLoader(true)
+    let token = localStorage.getItem('token')
+    findUser(token, email).then((response) => {
+      setUserData({ ...response.data.found })
+      setLoader(false)
+    })
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+    },
+    onSubmit: (values) => {
+      getUserData(values.email)
+    }
+  });
+
+  const promote = (id, email) => {
+    let token = localStorage.getItem('token')
+    promoteUser(token, id).then(() => {
+      getUserData(email)
+    })
+  }
+
+  let results = (resultsArray) => {
+    return <Accordion>
+      <Accordion.Item eventKey="0">
+        <Accordion.Header>Results</Accordion.Header>
+        <Accordion.Body>
+          {resultsArray.map((result) => {
+            return <p key={result}> {result} </p>
+          })}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  }
+
+  return <div className={classes.userInfo}>
+    <Form onSubmit={formik.handleSubmit} >
+      <Row className="align-items-center">
+        <Col xs="auto">
+          <Form.Control name="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            type="text" className="mb-2"
+            id="inlineFormInput"
+            placeholder="User email" />
+        </Col>
+        <Col xs="auto">
+          <Button type="submit" className="mb-2">
+            Submit
+          </Button>
+        </Col>
+      </Row>
+    </Form>
+    {!userData && loader
+      ? <Preloader />
+      : userData && <div>
+        <Table striped bordered hover>
+          <tbody>
+            {Object.keys(userData).map((key) => {
+              return <tr key={key}>
+                <td>{key}</td>
+                <td className={classes.tdData}>{key === "results" ? results(userData[key]) : JSON.stringify(userData[key])}</td>
+              </tr>
+            })}
+          </tbody>
+        </Table>
+
+        <Button type="submit" className="mb-2" onClick={() => { promote(userData._id, userData.email) }}>
+          Promote to admin
+        </Button>
+      </div>
+    }
+  </div>
+}
+
 
 export default AdminPanel;

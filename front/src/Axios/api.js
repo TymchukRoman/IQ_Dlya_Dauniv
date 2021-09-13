@@ -70,3 +70,11 @@ export const getResult = (resultId) => {
 export const getLogs = (token) => {
   return client.post('getLogs', { token })
 }
+
+export const findUser = (token, email) => {
+  return client.post('user/findUser', { token, email })
+}
+
+export const promoteUser = (token, id) => {
+  return client.post('user/promoteUser', { token, id })
+}

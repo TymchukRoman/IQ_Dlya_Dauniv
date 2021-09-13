@@ -8,11 +8,19 @@
     margin-left: 93%;
 }
 
-.keyBadge{
+.keyBadge {
     width: 55px;
     margin-right: 8px;
 }
 
 .fieldKey {
     margin-right: 5px;
+}
+
+.userInfo {
+    word-wrap: break-word;
+}
+
+.tdData {
+    word-wrap: break-word;
 }
