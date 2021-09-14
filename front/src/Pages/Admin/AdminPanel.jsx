@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, ButtonGroup, Col, Row, Accordion, Badge, Form, Table } from "react-bootstrap";
-import { getPendQuestions, approve, getLogs, findUser, promoteUser } from "../../Axios/api";
+import { getPendQuestions, approve, getLogs, findUser, promoteUser, findQuestion } from "../../Axios/api";
 import classes from "../styles/AdminPanel.module.css";
 import Preloader from "../Assets/Preloader";
 import { useFormik } from "formik";
@@ -17,7 +17,7 @@ const AdminPanel = () => {
         return <UserPanel />;
 
       case "update":
-        return <p> Updating questions</p>;
+        return <QuestionPanel />;
 
       case "logs":
         return <Logs />;
@@ -213,5 +213,61 @@ const UserPanel = () => {
   </div>
 }
 
+const QuestionPanel = () => {
+  const [questionData, setQuestionData] = useState(null);
+  const [loader, setLoader] = useState(false);
+
+  const getQuestionData = (questionId) => {
+    setLoader(true)
+    let token = localStorage.getItem('token')
+    findQuestion(token, questionId).then((response) => {
+      setQuestionData({ ...response.data })
+      setLoader(false)
+    })
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      questionId: "",
+    },
+    onSubmit: (values) => {
+      getQuestionData(values.questionId)
+    }
+  });
+
+  return <div>
+    <Form onSubmit={formik.handleSubmit} >
+      <Row className="align-items-center">
+        <Col xs="auto">
+          <Form.Control name="questionId"
+            onChange={formik.handleChange}
+            value={formik.values.questionId}
+            type="text" className="mb-2"
+            id="inlineFormInput"
+            placeholder="Question id" />
+        </Col>
+        <Col xs="auto">
+          <Button type="submit" className="mb-2">
+            Submit
+          </Button>
+        </Col>
+      </Row>
+    </Form>
+    {(loader && !questionData) && <Preloader />}
+    {questionData ? <div>
+      {JSON.stringify(questionData.statistic)}
+      <Table striped bordered hover>
+        <tbody>
+          {Object.keys(questionData.question).map((key) => {
+            return <tr key={key}>
+              <td>{key}</td>
+              <td className={classes.tdData}>{JSON.stringify(questionData.question[key])}</td>
+            </tr>
+          })}
+        </tbody>
+      </Table>
+    </div> : "None"}
+  </div>
+}
 
 export default AdminPanel;

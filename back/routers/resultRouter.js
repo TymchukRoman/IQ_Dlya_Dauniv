@@ -3,9 +3,11 @@ const router = express.Router();
 const Result = require('../models/result');
 const Question = require('../models/question');
 const User = require('../models/user');
+const QResult = require('../models/qResult')
 const auth = require("../middleware/auth");
 const answerValidation = require('../validators/answerValidation');
 const logger = require('../utils/logger');
+const admin = require("../middleware/admin");
 
 router.post('/checkResults', auth, async (req, res) => {
     try {
@@ -14,12 +16,19 @@ router.post('/checkResults', auth, async (req, res) => {
             res.send({ err })
             return
         }
+        let resultArray = [];
         let points = 0;
         Promise.all(req.body.answers.map(async (answer) => {
             await Question.findOne({ _id: answer.id }, (err, found) => {
                 if (!found) {
                     console.log({ err });
                 } else {
+                    resultArray.push({
+                        qText: found.qText,
+                        qId: found._id,
+                        answer: answer.answer,
+                        timeSpent: answer.time ? answer.time : 0
+                    })
                     if (found.rigthAnswer === answer.answer) {
                         points++;
                         return 1;
@@ -36,8 +45,12 @@ router.post('/checkResults', auth, async (req, res) => {
             });
             writeUserResult(testResult.points, testResult._id, req.user.user_id)
             const savedR = await testResult.save();
-            res.send({resultId: savedR._id});
-            return
+
+            await QResult.insertMany(resultArray).catch((error) => {
+                logger("Error", "Result creating error", "checkResults => QResult.insertMany", { resultArray, error, err });
+            });
+
+            return res.send({ resultId: savedR._id });
         })
     } catch (err) {
         logger("Error", "Check result error", "/checkResults", { answers: req.body.answers, user: req.user._id, err });
@@ -126,5 +139,19 @@ const calcTop = (list) => {
     }
     return top
 }
+
+router.post('/getStatistic', admin, async (req, res) => {
+    try {
+        await QResult.find({ qId: req.body.id }, (err, found) => {
+            if (!found || err) {
+                return res.send({ err });
+            } else {
+                return res.send(found);
+            }
+        })
+    } catch (err) {
+        logger("Error", "Get statistic error", "/getStatistic", { err, id: req.body.id });
+    }
+})
 
 module.exports = router

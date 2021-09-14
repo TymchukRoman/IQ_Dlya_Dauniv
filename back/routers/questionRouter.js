@@ -3,6 +3,7 @@ var router = express.Router()
 const Question = require('../models/question')
 const PendQuestion = require('../models/pendQuestion')
 const User = require('../models/user')
+const QResult = require('../models/qResult')
 const questionValidation = require('../validators/questionValidation')
 const addQuestion = require('../middleware/addQuestion')
 const logger = require('../utils/logger');
@@ -10,8 +11,8 @@ const admin = require("../middleware/admin");
 
 router.get('/getQuestions', async (req, res) => {
 	try {
-		let idArray = []
-		let qArray = []
+		let idArray = [];
+		let qArray = [];
 		await Question.find({}, (err, found) => {
 			if (!found) {
 				res.send({ err })
@@ -177,15 +178,35 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
 })
 
 //admin route
-router.post("/findQuestions", admin, async (req, res) => {
+router.post("/findQuestion", admin, async (req, res) => {
 	try {
-		await Question.findOne({ _id: req.body.id }, (err, found) => {
+		let response = {};
+		await Question.findOne({ _id: req.body.id }, async (err, found) => {
 			if (!found || err) {
-				return res.send({ err, msg: "No found questions" })
+				response.question = { err, msg: "No found questions" }
+				await QResult.find({ qId: req.body.id }, (err, found) => {
+					if (!found || err) {
+						response.statistic = { err }
+						return res.send({ ...response })
+					} else {
+						response.statistic = [...found]
+						return res.send({ ...response })
+					}
+				})
 			} else {
-				return res.send({ found })
+				response.question = found
+				await QResult.find({ qId: req.body.id }, (err, found) => {
+					if (!found || err) {
+						response.statistic = { err }
+						return res.send({ ...response })
+					} else {
+						response.statistic = [...found]
+						return res.send({ ...response })
+					}
+				})
 			}
 		})
+
 	} catch (err) {
 		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
 	}

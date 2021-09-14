@@ -78,3 +78,11 @@ export const findUser = (token, email) => {
 export const promoteUser = (token, id) => {
   return client.post('user/promoteUser', { token, id })
 }
+
+export const findQuestion = (token, id) => {
+  return client.post('findQuestion', { token, id })
+}
+
+export const getAllQuestions = (token, id) => {
+  return client.post('getAllQuestions', { token, id })
+}
