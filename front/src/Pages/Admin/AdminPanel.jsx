@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Button, ButtonGroup, Col, Row, Accordion, Badge, Form, Table } from "react-bootstrap";
-import { getPendQuestions, approve, getLogs, findUser, promoteUser, findQuestion } from "../../Axios/api";
+import { ListGroup, Button, ButtonGroup, Col, Row, Accordion, Badge, Form, Table, Pagination } from "react-bootstrap";
+import { getPendQuestions, approve, getLogs, findUser, promoteUser, findQuestion, getAllQuestions, pageCount } from "../../Axios/api";
 import classes from "../styles/AdminPanel.module.css";
 import Preloader from "../Assets/Preloader";
 import { useFormik } from "formik";
@@ -214,15 +214,57 @@ const UserPanel = () => {
 }
 
 const QuestionPanel = () => {
+  const [questions, setQuestions] = useState(null);
   const [questionData, setQuestionData] = useState(null);
-  const [loader, setLoader] = useState(false);
+  // const [loader, setLoader] = useState(false);
+  const [pages, setPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginator, setPaginator] = useState([]);
+
+  useEffect(() => {
+    const renderPagination = () => {
+      let array = []
+      for (let number = 1; number <= Math.ceil(pages / 10); number++) {
+        array.push(
+          <Pagination.Item key={number} active={number === currentPage} onClick={() => { changePage(number) }}>
+            {number}
+          </Pagination.Item>
+        )
+      }
+      return array
+    }
+    setPaginator(renderPagination());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pages, currentPage])
+
+
+
+  const changePage = (number) => {
+    let token = localStorage.getItem('token')
+    setCurrentPage(number)
+    getAllQuests(token, number)
+  }
+
+  useEffect(() => {
+    let token = localStorage.getItem('token')
+    pageCount(token).then((response) => {
+      setPages(response.data.count)
+    })
+    getAllQuests(token)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const getAllQuests = (token, number = currentPage) => {
+    getAllQuestions(token, number).then((response) => {
+      setQuestions(response.data.found)
+    })
+  }
 
   const getQuestionData = (questionId) => {
-    setLoader(true)
     let token = localStorage.getItem('token')
     findQuestion(token, questionId).then((response) => {
       setQuestionData({ ...response.data })
-      setLoader(false)
+      console.log(response.data)
     })
   }
 
@@ -253,20 +295,66 @@ const QuestionPanel = () => {
         </Col>
       </Row>
     </Form>
-    {(loader && !questionData) && <Preloader />}
-    {questionData ? <div>
-      {JSON.stringify(questionData.statistic)}
-      <Table striped bordered hover>
-        <tbody>
-          {Object.keys(questionData.question).map((key) => {
-            return <tr key={key}>
-              <td>{key}</td>
-              <td className={classes.tdData}>{JSON.stringify(questionData.question[key])}</td>
-            </tr>
-          })}
-        </tbody>
-      </Table>
-    </div> : "None"}
+    {(questions && questionData && !questionData.err)
+      && <ManyAndSingleQ questions={questions} paginator={paginator} questionData={questionData} getQuestionData={getQuestionData} />}
+    {(questions && (!questionData || questionData.err))
+      && <OnlyManyQ questions={questions} paginator={paginator} getQuestionData={getQuestionData} />}
+
+  </div>
+}
+
+const OnlyManyQ = ({ questions, paginator, getQuestionData }) => {
+  return <div>
+    {questions ? <ListGroup>
+      {questions.map((quest) => {
+        return <ListGroup.Item key={quest.qText} action onClick={() => { getQuestionData(quest._id) }}>
+          {JSON.stringify(quest)}
+        </ListGroup.Item>
+      })}
+    </ListGroup> : <Preloader />}
+    <Pagination size="sm">
+      {paginator.map((item) => {
+        return item
+      })}
+    </Pagination>
+  </div>
+}
+
+const ManyAndSingleQ = ({ questions, paginator, questionData, getQuestionData }) => {
+  return <div className={classes.qContainer}>
+    <div className={classes.Navigation}>
+      {questions ? <ListGroup>
+        {questions.map((quest) => {
+          return <ListGroup.Item key={quest.qText} action onClick={() => { getQuestionData(quest._id) }}>
+            {JSON.stringify(quest.qText)}
+          </ListGroup.Item>
+        })}
+      </ListGroup> : <Preloader />}
+      <Pagination size="sm">
+        {paginator.map((item) => {
+          return item
+        })}
+      </Pagination>
+    </div>
+    <div className={classes.qData}>
+      <SingleQuestion questionData={questionData} />
+    </div>
+  </div>
+}
+
+const SingleQuestion = ({ questionData }) => {
+  console.log(questionData)
+  return <div>
+    <Table bordered hover>
+      <tbody>
+        {questionData && Object.keys(questionData.question).map((key) => {
+          return <tr key={key}>
+            <td>{key}</td>
+            <td className={classes.tdData}>{JSON.stringify(questionData && questionData.question[key])}</td>
+          </tr>
+        })}
+      </tbody>
+    </Table>
   </div>
 }
 

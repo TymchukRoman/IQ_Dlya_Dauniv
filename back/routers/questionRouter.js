@@ -183,22 +183,12 @@ router.post("/findQuestion", admin, async (req, res) => {
 		let response = {};
 		await Question.findOne({ _id: req.body.id }, async (err, found) => {
 			if (!found || err) {
-				response.question = { err, msg: "No found questions" }
-				await QResult.find({ qId: req.body.id }, (err, found) => {
-					if (!found || err) {
-						response.statistic = { err }
-						return res.send({ ...response })
-					} else {
-						response.statistic = [...found]
-						return res.send({ ...response })
-					}
-				})
+				return res.send({ err })
 			} else {
 				response.question = found
 				await QResult.find({ qId: req.body.id }, (err, found) => {
 					if (!found || err) {
-						response.statistic = { err }
-						return res.send({ ...response })
+						return res.send({ err })
 					} else {
 						response.statistic = [...found]
 						return res.send({ ...response })
@@ -212,10 +202,24 @@ router.post("/findQuestion", admin, async (req, res) => {
 	}
 })
 
+router.post("/pageCount", admin, async (req, res) => {
+	try {
+		await Question.countDocuments({}, (err, count) => {
+			if (!count || err) {
+				return res.send({ err })
+			} else {
+				return res.send({ count })
+			}
+		})
+	} catch (err) {
+		logger("Error", "Cannot get page count", "/pageCount", { err, user: req.user });
+	}
+})
+
 //admin route
 router.post("/getAllQuestions", admin, async (req, res) => {
 	try {
-		await Question.find({}, (err, found) => {
+		await Question.find({}, {}, { skip: (req.body.page * 10 - 10), limit: 10 }, (err, found) => {
 			if (!found || err) {
 				return res.send({ err, msg: "No found questions" })
 			} else {

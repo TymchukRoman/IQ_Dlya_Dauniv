@@ -83,6 +83,11 @@ export const findQuestion = (token, id) => {
   return client.post('findQuestion', { token, id })
 }
 
-export const getAllQuestions = (token, id) => {
-  return client.post('getAllQuestions', { token, id })
+export const getAllQuestions = (token, page) => {
+  console.log(page)
+  return client.post('getAllQuestions', { token, page })
+}
+
+export const pageCount = (token) => {
+  return client.post('pageCount', { token })
 }
