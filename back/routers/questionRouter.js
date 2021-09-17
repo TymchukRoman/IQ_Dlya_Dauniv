@@ -3,15 +3,17 @@ var router = express.Router()
 const Question = require('../models/question')
 const PendQuestion = require('../models/pendQuestion')
 const User = require('../models/user')
+const QResult = require('../models/qResult')
 const questionValidation = require('../validators/questionValidation')
+const validateQuestionUpdate = require('../validators/questionUpdateValidation')
 const addQuestion = require('../middleware/addQuestion')
 const logger = require('../utils/logger');
 const admin = require("../middleware/admin");
 
 router.get('/getQuestions', async (req, res) => {
 	try {
-		let idArray = []
-		let qArray = []
+		let idArray = [];
+		let qArray = [];
 		await Question.find({}, (err, found) => {
 			if (!found) {
 				res.send({ err })
@@ -177,24 +179,48 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
 })
 
 //admin route
-router.post("/findQuestions", admin, async (req, res) => {
+router.post("/findQuestion", admin, async (req, res) => {
 	try {
-		await Question.findOne({ _id: req.body.id }, (err, found) => {
+		let response = {};
+		await Question.findOne({ _id: req.body.id }, async (err, found) => {
 			if (!found || err) {
-				return res.send({ err, msg: "No found questions" })
+				return res.send({ err })
 			} else {
-				return res.send({ found })
+				response.question = found
+				await QResult.find({ qId: req.body.id }, (err, found) => {
+					if (!found || err) {
+						return res.send({ err })
+					} else {
+						response.statistic = [...found]
+						return res.send({ ...response })
+					}
+				})
+			}
+		})
+
+	} catch (err) {
+		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
+	}
+})
+
+router.post("/pageCount", admin, async (req, res) => {
+	try {
+		await Question.countDocuments({}, (err, count) => {
+			if (!count || err) {
+				return res.send({ err })
+			} else {
+				return res.send({ count })
 			}
 		})
 	} catch (err) {
-		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
+		logger("Error", "Cannot get page count", "/pageCount", { err, user: req.user });
 	}
 })
 
 //admin route
 router.post("/getAllQuestions", admin, async (req, res) => {
 	try {
-		await Question.find({}, (err, found) => {
+		await Question.find({}, {}, { skip: (req.body.page * 10 - 10), limit: 10 }, (err, found) => {
 			if (!found || err) {
 				return res.send({ err, msg: "No found questions" })
 			} else {
@@ -209,8 +235,12 @@ router.post("/getAllQuestions", admin, async (req, res) => {
 //admin route
 router.post("/updateQuestion", admin, async (req, res) => {
 	try {
+		const validatedData = validateQuestionUpdate(req.body.newData, req.user.user_id);
+		if (validatedData.errs.length > 0) {
+			return res.send({ err: validatedData.errs })
+		}
 		await Question.findOneAndUpdate({ _id: req.body.id },
-			{ ...req.body.newdata }, { new: true }, (err, doc) => {
+			validatedData.validatedNewData, { new: true, upsert: true }, (err, doc) => {
 				if (err) {
 					return res.send({ err })
 				}
