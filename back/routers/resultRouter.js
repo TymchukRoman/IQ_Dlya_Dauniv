@@ -27,7 +27,8 @@ router.post('/checkResults', auth, async (req, res) => {
                         qText: found.qText,
                         qId: found._id,
                         answer: answer.answer,
-                        timeSpent: answer.time ? answer.time : 0
+                        timeSpent: answer.time ? answer.time : 0,
+                        date: new Date(Date.now()).toISOString(),
                     })
                     if (found.rigthAnswer === answer.answer) {
                         points++;

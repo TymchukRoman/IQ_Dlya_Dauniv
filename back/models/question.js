@@ -30,6 +30,14 @@ const questionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    lastUpdatedBy: {
+      type: String,
+      required: false,
+    },
+    lastUpdateDate: {
+      type: String,
+      required: false,
+    },
   },
   { collection: 'questions' },
 )

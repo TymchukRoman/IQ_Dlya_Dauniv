@@ -5,6 +5,7 @@ const PendQuestion = require('../models/pendQuestion')
 const User = require('../models/user')
 const QResult = require('../models/qResult')
 const questionValidation = require('../validators/questionValidation')
+const validateQuestionUpdate = require('../validators/questionUpdateValidation')
 const addQuestion = require('../middleware/addQuestion')
 const logger = require('../utils/logger');
 const admin = require("../middleware/admin");
@@ -234,8 +235,12 @@ router.post("/getAllQuestions", admin, async (req, res) => {
 //admin route
 router.post("/updateQuestion", admin, async (req, res) => {
 	try {
+		const validatedData = validateQuestionUpdate(req.body.newData, req.user.user_id);
+		if (validatedData.errs.length > 0) {
+			return res.send({ err: validatedData.errs })
+		}
 		await Question.findOneAndUpdate({ _id: req.body.id },
-			{ ...req.body.newdata }, { new: true }, (err, doc) => {
+			validatedData.validatedNewData, { new: true, upsert: true }, (err, doc) => {
 				if (err) {
 					return res.send({ err })
 				}
