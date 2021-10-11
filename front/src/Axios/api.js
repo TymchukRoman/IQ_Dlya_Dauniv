@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const client = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: 'https://iqdauntest.herokuapp.com/',
 })
 
 export const getQuestions = async () => {
@@ -71,6 +71,10 @@ export const getLogs = (token) => {
   return client.post('getLogs', { token })
 }
 
+export const clearLogs = (token) => {
+  return client.post('clearLogs', { token })
+}
+
 export const findUser = (token, email) => {
   return client.post('user/findUser', { token, email })
 }
@@ -79,18 +83,22 @@ export const promoteUser = (token, id) => {
   return client.post('user/promoteUser', { token, id })
 }
 
+export const demoteUser = (token, id) => {
+  return client.post('user/demoteUser', { token, id })
+}
+
+export const banUser = (token, id) => {
+  return client.post('user/banUser', { token, id })
+}
+
 export const findQuestion = (token, id) => {
   return client.post('findQuestion', { token, id })
 }
 
-export const getAllQuestions = (token, page) => {
-  return client.post('getAllQuestions', { token, page })
-}
-
-export const pageCount = (token) => {
-  return client.post('pageCount', { token })
-}
-
 export const updateQuestion = (token, id, newData) => {
   return client.post('updateQuestion', { token, id, newData })
+}
+
+export const searchQuestions = (token, page, searchType, searchValue) => {
+  return client.post('searchQuestions', { token, page, data: { searchType, searchValue } })
 }

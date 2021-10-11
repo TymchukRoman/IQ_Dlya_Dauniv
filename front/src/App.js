@@ -22,7 +22,7 @@ export default function App() {
     if (token && token !== "undefined") {
       meAPI(token).then((res) => {
         if (res.data.err) {
-          console.log(res.data.err)
+          console.log(res.data.err, token)
           localStorage.setItem("token", "")
         } else {
           setUser({ ...res.data })
