@@ -41,3 +41,10 @@
     grid-area: qData;
     margin-left: 30px;
 }
+
+.qText {
+    font-size: larger;
+    color: darkslategray;
+    font-family: monospace;
+    font-style: initial;
+}

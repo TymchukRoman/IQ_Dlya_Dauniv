@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Modal, ListGroup, Button, ButtonGroup, Col, Row, Accordion, Badge, Form, Table, Pagination } from "react-bootstrap";
-import { getPendQuestions, approve, getLogs, findUser, promoteUser, findQuestion, getAllQuestions, pageCount, updateQuestion } from "../../Axios/api";
+import { banUser, demoteUser, getPendQuestions, approve, getLogs, findUser, promoteUser, findQuestion, updateQuestion, searchQuestions, clearLogs } from "../../Axios/api";
 import classes from "../styles/AdminPanel.module.css";
 import Preloader from "../Assets/Preloader";
 import { useFormik } from "formik";
 import { Charts } from "./Charts";
+import Select from 'react-select'
 
 const AdminPanel = () => {
   const [panelSettings, setPanelSettings] = useState({ option: "approve" });
@@ -90,6 +91,15 @@ const Logs = () => {
     })
   }, [])
 
+  const cLogs = () => {
+    let token = localStorage.getItem('token')
+    clearLogs(token).then(() => {
+      getLogs(token).then((response) => {
+        setLogs([...response.data.found])
+      })
+    })
+  }
+
   let body = (key) => {
     switch (key) {
       case "Error":
@@ -112,7 +122,7 @@ const Logs = () => {
   return <div>
     {logs
       ? <div>
-        <Button className={classes.clearLogs}> Clear logs </Button>
+        <Button className={classes.clearLogs} onClick={cLogs}> Clear logs </Button>
         {logs.map((log) => {
           return <Accordion key={log._id}>
             <Accordion.Item eventKey="0">
@@ -120,7 +130,7 @@ const Logs = () => {
               <Accordion.Body>
                 <div><b className={classes.fieldKey}>ID: </b> {log._id}</div>
                 <div><b className={classes.fieldKey}>Location: </b> <Badge bg="secondary">{log.func}</Badge></div>
-                <div><b className={classes.fieldKey}>Data: </b> {JSON.stringify(log.data)}</div>
+                <div><b className={classes.fieldKey}>Data: </b> {(log.data).trim()}</div>
                 <div><b className={classes.fieldKey}>Time: </b> {log.timeStamp}</div>
               </Accordion.Body>
             </Accordion.Item>
@@ -157,6 +167,27 @@ const UserPanel = () => {
   const promote = (id, email) => {
     let token = localStorage.getItem('token')
     promoteUser(token, id).then(() => {
+      getUserData(email)
+    })
+  }
+
+  const demote = (id, email) => {
+    let token = localStorage.getItem('token')
+    demoteUser(token, id).then(() => {
+      getUserData(email)
+    })
+  }
+
+  const ban = (id, email) => {
+    let token = localStorage.getItem('token')
+    banUser(token, id).then(() => {
+      getUserData(email)
+    })
+  }
+
+  const unban = (id, email) => {
+    let token = localStorage.getItem('token')
+    demoteUser(token, id).then(() => {
       getUserData(email)
     })
   }
@@ -206,9 +237,32 @@ const UserPanel = () => {
           </tbody>
         </Table>
 
-        <Button type="submit" className="mb-2" onClick={() => { promote(userData._id, userData.email) }}>
-          Promote to admin
-        </Button>
+        <Row>
+          {userData.type === "user" && <Col xs="auto">
+            <Button type="submit" className="mb-2" onClick={() => { promote(userData._id, userData.email) }}>
+              Promote to admin
+            </Button>
+          </Col>
+          }
+          {userData.type === "admin" && <Col xs="auto">
+            <Button type="submit" className="mb-2" onClick={() => { demote(userData._id, userData.email) }}>
+              Demote to user
+            </Button>
+          </Col>
+          }
+          {userData.type === "user" && <Col xs="auto">
+            <Button type="submit" className="mb-2" onClick={() => { ban(userData._id, userData.email) }}>
+              Ban
+            </Button>
+          </Col>
+          }
+          {userData.type === "banned" && <Col xs="auto">
+            <Button type="submit" className="mb-2" onClick={() => { unban(userData._id, userData.email) }}>
+              Unban
+            </Button>
+          </Col>
+          }
+        </Row>
       </div>
     }
   </div>
@@ -217,47 +271,49 @@ const UserPanel = () => {
 const QuestionPanel = () => {
   const [questions, setQuestions] = useState(null);
   const [questionData, setQuestionData] = useState(null);
-  // const [loader, setLoader] = useState(false);
-  const [pages, setPages] = useState(1);
+  const [pages, setPages] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginator, setPaginator] = useState([]);
 
+
   useEffect(() => {
-    const renderPagination = () => {
-      let array = []
-      for (let number = 1; number <= Math.ceil(pages / 10); number++) {
-        array.push(
-          <Pagination.Item key={number} active={number === currentPage} onClick={() => { changePage(number) }}>
-            {number}
-          </Pagination.Item>
-        )
-      }
-      return array
-    }
+    getQuestions();
     setPaginator(renderPagination());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pages, currentPage])
-
-
-
-  const changePage = (number) => {
-    let token = localStorage.getItem('token')
-    setCurrentPage(number)
-    getAllQuests(token, number)
-  }
-
-  useEffect(() => {
-    let token = localStorage.getItem('token')
-    pageCount(token).then((response) => {
-      setPages(response.data.count)
-    })
-    getAllQuests(token)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const getAllQuests = (token, number = currentPage) => {
-    getAllQuestions(token, number).then((response) => {
-      setQuestions(response.data.found)
+  useEffect(() => {
+    getQuestions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage])
+
+  useEffect(() => {
+    setPaginator(renderPagination());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pages])
+
+  const changePage = (number) => {
+    setCurrentPage(number)
+  }
+
+  const renderPagination = (pagesCount = pages) => {
+    let array = []
+    for (let number = 1; number <= Math.ceil(pagesCount / 10); number++) {
+      array.push(
+        <Pagination.Item key={number} active={number === currentPage} onClick={() => { changePage(number) }}>
+          {number}
+        </Pagination.Item>
+      )
+    }
+    return array
+  }
+
+  const getQuestions = (number = currentPage, searchType = "", searchValue = "") => {
+    let token = localStorage.getItem('token')
+    searchQuestions(token, number, searchType, searchValue).then((response) => {
+      setQuestions(response.data.questions)
+      setPages(response.data.pagination)
+      setPaginator(renderPagination(response.data.pagination));
     })
   }
 
@@ -271,23 +327,65 @@ const QuestionPanel = () => {
 
   const formik = useFormik({
     initialValues: {
-      questionId: "",
+      searchType: "id",
+      searchValue: "",
     },
     onSubmit: (values) => {
-      getQuestionData(values.questionId)
+      console.log(values);
+      getQuestions(1, values.searchType, values.searchValue)
     }
   });
+
+  const changes = (value) => {
+    formik.setFieldValue("searchType", value)
+    return value
+  }
 
   return <div>
     <Form onSubmit={formik.handleSubmit} >
       <Row className="align-items-center">
-        <Col xs="auto">
-          <Form.Control name="questionId"
+
+        <Col xs="sm">
+          <Select
+            name="searchType"
+            onChange={value => { changes(value.value) }}
+            className="mb-2"
+            options={[
+              { value: 'id', label: 'ID' },
+              { value: 'qText', label: 'Question text' },
+              { value: 'creator', label: 'User' },
+              { value: 'datePeriod', label: 'Period' },
+            ]} />
+        </Col>
+        <Col xs="sm">
+          {formik.values.searchType === "id" && <Form.Control
+            name="searchValue"
             onChange={formik.handleChange}
-            value={formik.values.questionId}
+            value={formik.values.searchValue}
             type="text" className="mb-2"
             id="inlineFormInput"
-            placeholder="Question id" />
+            placeholder="Question id" />}
+          {formik.values.searchType === "qText" && <Form.Control
+            name="searchValue"
+            onChange={formik.handleChange}
+            value={formik.values.searchValue}
+            type="text" className="mb-2"
+            id="inlineFormInput"
+            placeholder="Question text" />}
+          {formik.values.searchType === "creator" && <Form.Control
+            name="searchValue"
+            onChange={formik.handleChange}
+            value={formik.values.searchValue}
+            type="text" className="mb-2"
+            id="inlineFormInput"
+            placeholder="Question creator" />}
+          {formik.values.searchType === "datePeriod" && <Form.Control
+            name="searchValue"
+            onChange={formik.handleChange}
+            value={formik.values.searchValue}
+            type="text" className="mb-2"
+            id="inlineFormInput"
+            placeholder="Question created between" />}
         </Col>
         <Col xs="auto">
           <Button type="submit" className="mb-2">
@@ -304,12 +402,24 @@ const QuestionPanel = () => {
   </div>
 }
 
+
+
 const OnlyManyQ = ({ questions, paginator, getQuestionData }) => {
   return <div>
     {questions ? <ListGroup>
       {questions.map((quest) => {
         return <ListGroup.Item key={quest.qText} action onClick={() => { getQuestionData(quest._id) }}>
-          {JSON.stringify(quest)}
+          <Row>
+            <Col xs="auto">
+              <span className={classes.qText}>{quest.qText}</span>
+            </Col>
+            <Col xs="auto">
+              <b>{" Author: "}</b>{quest.author}
+            </Col>
+            <Col xs="auto">
+              <b>{" Created: "}</b> {quest.date}
+            </Col>
+          </Row>
         </ListGroup.Item>
       })}
     </ListGroup> : <Preloader />}
@@ -327,7 +437,7 @@ const ManyAndSingleQ = ({ questions, paginator, questionData, getQuestionData })
       {questions ? <ListGroup>
         {questions.map((quest) => {
           return <ListGroup.Item key={quest.qText} action onClick={() => { getQuestionData(quest._id) }}>
-            {JSON.stringify(quest.qText)}
+            <span className={classes.qText}>{quest.qText}</span>
           </ListGroup.Item>
         })}
       </ListGroup> : <Preloader />}

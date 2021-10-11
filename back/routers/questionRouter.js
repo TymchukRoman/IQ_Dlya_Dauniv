@@ -181,7 +181,7 @@ router.post("/getPendQuestions", addQuestion, async (req, res) => {
 //admin route
 router.post("/findQuestion", admin, async (req, res) => {
 	try {
-		let response = {};
+		let response = { question: null, statistic: null };
 		await Question.findOne({ _id: req.body.id }, async (err, found) => {
 			if (!found || err) {
 				return res.send({ err })
@@ -197,7 +197,6 @@ router.post("/findQuestion", admin, async (req, res) => {
 				})
 			}
 		})
-
 	} catch (err) {
 		logger("Error", "Cannot find question", "/findQuestions", { err, user: req.user, id: req.body.id });
 	}
@@ -233,6 +232,49 @@ router.post("/getAllQuestions", admin, async (req, res) => {
 })
 
 //admin route
+router.post("/searchQuestions", admin, async (req, res) => {
+	try {
+		const { searchType, searchValue } = req.body.data;
+		const page = !req.body.page ? 1 : req.body.page;
+		let searchObj = {};
+		switch (searchType) {
+			case "id":
+				searchObj = { _id: searchValue }
+				break;
+			case "qText":
+				searchObj = { qText: new RegExp(searchValue, "i") }
+				break;
+			case "creator":
+				searchObj = { author: searchValue }
+				break;
+			default:
+				break;
+		}
+		let response = { questions: [], pagination: null, err: [] };
+		await Promise.all([
+			Question.find(searchObj, {}, { skip: (parseInt(page) * 10 - 10), limit: 10 }, (err, found) => {
+				if (!found || err) {
+					response.err.push(err);
+				} else {
+					response.questions = [...found];
+				}
+			}),
+			Question.countDocuments(searchObj, (err, count) => {
+				if (!count || err) {
+					response.err.push(err);
+				} else {
+					response.pagination = count;
+				}
+			})
+		]).then(() => {
+			return res.send({ ...response });
+		})
+	} catch (err) {
+		logger("Error", "Cannot get all questions", "/searchQuestions", { err, user: req.user, data: { ...req.body.data } });
+	}
+})
+
+//admin route
 router.post("/updateQuestion", admin, async (req, res) => {
 	try {
 		const validatedData = validateQuestionUpdate(req.body.newData, req.user.user_id);
@@ -264,5 +306,19 @@ router.post("/deleteQuestion", admin, async (req, res) => {
 		logger("Error", "Cannot delete question", "/deleteQuestion", { err, user: req.user, id: req.body.id });
 	}
 })
+
+// const getPages = () => {
+// 	try {
+// 		await Question.countDocuments({}, (err, count) => {
+// 			if (!count || err) {
+// 				return res.send({ err })
+// 			} else {
+// 				return res.send({ count })
+// 			}
+// 		})
+// 	} catch (err) {
+// 		logger("Error", "Cannot get page count", "getPages()", { err });
+// 	}
+// }
 
 module.exports = router

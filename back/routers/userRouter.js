@@ -124,4 +124,34 @@ router.post("/promoteUser", admin, async (req, res) => {
     }
 })
 
+
+router.post("/demoteUser", admin, async (req, res) => {
+    try {
+        await User.findOneAndUpdate({ _id: req.body.id }, { type: "user" }, {}, (err, doc) => {
+            if (err) {
+                return res.send({ err })
+            }
+            logger("Info", "User demoted", "/demoteUser", { demotor: req.user, demoted: req.body.id });
+            return res.send({ msg: "User demoted" })
+        })
+    } catch (err) {
+        logger("Error", "User demotion error", "/demoteUser", { user: req.user, err, userId: req.body.id });
+    }
+})
+
+
+router.post("/banUser", admin, async (req, res) => {
+    try {
+        await User.findOneAndUpdate({ _id: req.body.id }, { type: "banned" }, {}, (err, doc) => {
+            if (err) {
+                return res.send({ err })
+            }
+            logger("Info", "User baned", "/banUser", { admin: req.user, user: req.body.id });
+            return res.send({ msg: "User propoted" })
+        })
+    } catch (err) {
+        logger("Error", "User ban error", "/banUser", { user: req.user, err, userId: req.body.id });
+    }
+})
+
 module.exports = router
