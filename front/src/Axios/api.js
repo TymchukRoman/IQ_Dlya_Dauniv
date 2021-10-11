@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const client = axios.create({
   baseURL: 'https://iqdauntest.herokuapp.com/',
+  withCredentials: false,
 })
 
 export const getQuestions = async () => {
