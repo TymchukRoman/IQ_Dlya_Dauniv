@@ -24,6 +24,9 @@ router.get('/getQuestions', async (req, res) => {
 				})
 			}
 		})
+		if(!idArray.length){
+			logger("Warn", "Question array is empty", "/getQuestions", { idArray });
+		}
 		Promise.all(
 			getArray(idArray.length - 1).map(async (index) => {
 				let result = await getById(idArray[index])
@@ -35,8 +38,7 @@ router.get('/getQuestions', async (req, res) => {
 				})
 			}),
 		).then(() => {
-			res.send({ questions: [...qArray] })
-			return
+			return res.send({ questions: [...qArray] })
 		})
 	} catch (err) {
 		logger("Error", "Get questions error", "/getQuestions", { err });
